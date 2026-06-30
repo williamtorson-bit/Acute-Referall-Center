@@ -3,676 +3,425 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0f766e" />
-  <title>Acute Referral Centre App</title>
-  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="description" content="ARC Resolve: Acute Referral Centre decision support for provider responsibility, Who Pays, trusted assessment and escalation." />
+  <link rel="manifest" href="manifest.json" />
+  <title>ARC Resolve — Acute Referral Centre App</title>
   <style>
     :root{
-      --bg:#0b1220;
-      --panel:#101827;
-      --panel-2:#132033;
-      --card:#ffffff;
-      --text:#e8f0ff;
-      --muted:#9fb1c7;
-      --ink:#142033;
-      --ink-soft:#56667a;
-      --accent:#14b8a6;
-      --accent-2:#2563eb;
-      --accent-3:#7c3aed;
-      --danger:#dc2626;
-      --warning:#f59e0b;
-      --success:#16a34a;
-      --border:#dbe5f2;
-      --shadow: 0 18px 55px rgba(2, 8, 23, .24);
-      --radius: 22px;
+      --bg:#070b16;
+      --panel:#0d1528;
+      --panel2:#111d34;
+      --card:#101827;
+      --muted:#9aa8bd;
+      --text:#f6f8fc;
+      --sub:#c8d2e2;
+      --line:rgba(255,255,255,.12);
+      --accent:#5eead4;
+      --accent2:#8b5cf6;
+      --accent3:#38bdf8;
+      --warn:#f59e0b;
+      --danger:#fb7185;
+      --good:#34d399;
+      --shadow:0 24px 70px rgba(0,0,0,.36);
+      --radius:24px;
+      --radius2:16px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
     body{
       margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:var(--font);
       background:
-        radial-gradient(circle at 20% 10%, rgba(20,184,166,.25), transparent 28rem),
-        radial-gradient(circle at 80% 0%, rgba(37,99,235,.22), transparent 26rem),
-        radial-gradient(circle at 60% 80%, rgba(124,58,237,.18), transparent 20rem),
-        var(--bg);
+        radial-gradient(circle at 10% -10%, rgba(56,189,248,.26), transparent 30%),
+        radial-gradient(circle at 95% 10%, rgba(139,92,246,.25), transparent 25%),
+        linear-gradient(180deg,#060914 0%,#0a1020 45%,#070b16 100%);
       color:var(--text);
       min-height:100vh;
     }
-    .app-shell{max-width:1280px;margin:0 auto;padding:28px 18px 54px}
-    header.hero{
-      display:grid;
-      grid-template-columns:auto 1fr auto;
-      gap:20px;
-      align-items:center;
-      padding:22px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(16,24,39,.72);
-      backdrop-filter: blur(12px);
-      border-radius:28px;
-      box-shadow: var(--shadow);
-      position:sticky;
-      top:12px;
-      z-index:10;
+    button,input,select,textarea{font:inherit}
+    a{color:inherit}
+    .app{width:min(1400px, calc(100% - 28px)); margin:0 auto; padding:18px 0 48px}
+    .topbar{
+      position:sticky;top:0;z-index:30;
+      backdrop-filter:blur(18px);
+      background:linear-gradient(180deg, rgba(7,11,22,.96), rgba(7,11,22,.72));
+      border-bottom:1px solid var(--line);
     }
-    .logo{
-      width:68px;height:68px;border-radius:20px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow:0 16px 38px rgba(20,184,166,.25);
+    .topbar-inner{width:min(1400px, calc(100% - 28px));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#5eead4,#38bdf8 45%,#8b5cf6);box-shadow:0 14px 30px rgba(94,234,212,.18)}
+    .logo svg{width:30px;height:30px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.3))}
+    .brand-title{font-weight:850;letter-spacing:-.04em;font-size:1.12rem;white-space:nowrap}
+    .brand-sub{font-size:.78rem;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+    .nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .nav button,.small-btn{
+      border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--sub);
+      border-radius:999px;padding:9px 12px;cursor:pointer;transition:.18s ease;display:inline-flex;gap:7px;align-items:center
     }
-    .logo svg{width:48px;height:48px}
-    h1{font-size:clamp(1.45rem, 2.7vw, 2.5rem);margin:0;letter-spacing:-.03em}
-    .subtitle{margin:6px 0 0;color:var(--muted);font-size:.98rem;line-height:1.45}
-    .badge-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .pill{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);padding:8px 11px;border-radius:999px;font-size:.78rem;color:#d8e6f7;white-space:nowrap}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
-    @media (max-width: 940px){.grid{grid-template-columns:1fr}header.hero{grid-template-columns:auto 1fr}.badge-row{grid-column:1/-1;justify-content:flex-start}}
-    .panel{
-      background:rgba(255,255,255,.96);
-      color:var(--ink);
-      border-radius:var(--radius);
-      padding:20px;
-      border:1px solid rgba(255,255,255,.55);
-      box-shadow: var(--shadow);
+    .nav button:hover,.small-btn:hover{background:rgba(255,255,255,.11);color:var(--text);transform:translateY(-1px)}
+    .nav button.active{background:rgba(94,234,212,.15);color:#dffdf8;border-color:rgba(94,234,212,.35)}
+    .hero{padding:34px 0 24px;display:grid;grid-template-columns:1.3fr .7fr;gap:22px;align-items:stretch}
+    .hero-card{border:1px solid var(--line);background:linear-gradient(135deg, rgba(17,29,52,.9), rgba(13,21,40,.72));border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero-card:before{content:"";position:absolute;inset:-100px -80px auto auto;width:260px;height:260px;border-radius:999px;background:rgba(94,234,212,.12);filter:blur(5px)}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(94,234,212,.25);background:rgba(94,234,212,.08);color:#bffff6;border-radius:999px;padding:8px 12px;font-size:.85rem;font-weight:700;margin-bottom:16px}
+    h1{font-size:clamp(2rem,5vw,4.25rem);line-height:.96;margin:0 0 16px;letter-spacing:-.075em}
+    .lead{color:var(--sub);font-size:1.08rem;line-height:1.6;max-width:820px;margin:0 0 22px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{
+      border:0;border-radius:16px;padding:13px 16px;font-weight:800;cursor:pointer;transition:.18s ease;display:inline-flex;align-items:center;gap:9px;justify-content:center
     }
-    .dark-panel{background:rgba(16,24,39,.78);color:var(--text);border-color:rgba(255,255,255,.12)}
-    .section-title{display:flex;gap:10px;align-items:center;margin:0 0 12px}
-    .section-title h2{font-size:1.15rem;margin:0;letter-spacing:-.01em}
-    .section-title .dot{width:12px;height:12px;border-radius:99px;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
-    textarea, select, input[type="text"], input[type="number"]{
-      width:100%;
-      border:1px solid var(--border);
-      background:#f8fbff;
-      color:var(--ink);
-      padding:12px 13px;
-      border-radius:14px;
-      font:inherit;
-      outline:none;
-      transition:.18s border, .18s box-shadow;
+    .btn-primary{background:linear-gradient(135deg,#5eead4,#38bdf8);color:#06111d;box-shadow:0 18px 35px rgba(56,189,248,.22)}
+    .btn-secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+    .btn-danger{background:rgba(251,113,133,.12);color:#fecdd3;border:1px solid rgba(251,113,133,.22)}
+    .btn:hover{transform:translateY(-1px);filter:saturate(1.05)}
+    .quick-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:100%}
+    .stat{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:22px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;min-height:135px}
+    .stat b{font-size:1.9rem;letter-spacing:-.055em}.stat span{color:var(--muted);font-size:.92rem;line-height:1.35}.stat .tag{font-size:.78rem;color:#bcfff5;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .grid{display:grid;grid-template-columns:420px 1fr;gap:18px;align-items:start}
+    .panel{border:1px solid var(--line);background:rgba(13,21,40,.84);box-shadow:var(--shadow);border-radius:var(--radius);overflow:hidden}
+    .panel-head{padding:18px 18px 14px;border-bottom:1px solid var(--line);display:flex;align-items:start;justify-content:space-between;gap:12px}
+    .panel-title{font-weight:850;letter-spacing:-.035em;font-size:1.05rem}.panel-note{font-size:.84rem;color:var(--muted);line-height:1.45;margin-top:4px}
+    .panel-body{padding:18px}
+    textarea,input,select{
+      width:100%;background:#080f1f;color:var(--text);border:1px solid rgba(255,255,255,.13);border-radius:15px;padding:12px 13px;outline:none;transition:.18s ease
     }
-    textarea{min-height:158px;resize:vertical;line-height:1.5}
-    textarea:focus, select:focus, input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(20,184,166,.15)}
-    label{display:block;font-weight:700;font-size:.86rem;margin:12px 0 6px;color:#24334a}
-    .hint{font-size:.82rem;color:var(--ink-soft);line-height:1.45;margin-top:8px}
-    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
-    @media (max-width: 720px){.form-grid{grid-template-columns:1fr}}
-    .check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
-    @media (max-width: 720px){.check-grid{grid-template-columns:1fr}}
-    .check{
-      display:flex;gap:10px;align-items:flex-start;
-      border:1px solid var(--border);
-      background:#f8fbff;
-      padding:11px;
-      border-radius:14px;
-      min-height:52px;
-    }
-    .check input{margin-top:2px;accent-color:var(--accent)}
-    .check span{font-size:.88rem;color:#263954;line-height:1.35}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    button{
-      border:0;
-      padding:12px 15px;
-      border-radius:14px;
-      font-weight:800;
-      cursor:pointer;
-      transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-      font:inherit;
-    }
-    button:hover{transform:translateY(-1px)}
-    .primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;box-shadow:0 10px 24px rgba(20,184,166,.24)}
-    .secondary{background:#eaf2ff;color:#143261}
-    .ghost{background:transparent;color:#dbeafe;border:1px solid rgba(255,255,255,.18)}
-    .light-ghost{background:transparent;color:#18466e;border:1px solid var(--border)}
-    .result-card{
-      border-radius:18px;
-      border:1px solid var(--border);
-      background:#f8fbff;
-      padding:16px;
-      margin-top:14px;
-    }
-    .result-card h3{margin:0 0 8px;font-size:1.02rem}
-    .status{
-      display:inline-flex;align-items:center;gap:8px;
-      font-weight:900;
-      padding:9px 12px;
-      border-radius:999px;
-      font-size:.82rem;
-      margin:2px 0 10px;
-    }
-    .status.success{background:#dcfce7;color:#166534}
-    .status.warning{background:#fef3c7;color:#92400e}
-    .status.danger{background:#fee2e2;color:#991b1b}
-    .status.info{background:#dbeafe;color:#1e40af}
-    .mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
-    @media (max-width: 860px){.mini-grid{grid-template-columns:1fr}}
-    .mini{background:white;border:1px solid var(--border);border-radius:16px;padding:13px}
-    .mini .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:900;color:#6b7b91}
-    .mini .v{font-size:1rem;font-weight:900;margin-top:6px;color:#13223b;line-height:1.35}
-    ul.clean{padding-left:19px;margin:8px 0 0;line-height:1.55}
-    .source-chip{display:inline-flex;margin:4px 6px 0 0;padding:6px 9px;border-radius:999px;background:#eef6ff;border:1px solid #dbeafe;color:#174177;font-size:.76rem;font-weight:700}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-    .tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#dbeafe;padding:9px 11px;border-radius:999px;font-size:.86rem}
-    .tab.active{background:white;color:#142033}
-    .tab-panel{display:none}.tab-panel.active{display:block}
-    .knowledge-card{
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:16px;
-      padding:14px;
-      background:rgba(255,255,255,.06);
-      margin:10px 0;
-    }
-    .knowledge-card h3{font-size:.98rem;margin:0 0 8px;color:#fff}
-    .knowledge-card p{margin:0;color:#cbd5e1;line-height:1.5;font-size:.9rem}
-    .tag{display:inline-flex;margin:8px 6px 0 0;padding:5px 8px;border-radius:999px;background:rgba(20,184,166,.12);color:#99f6e4;font-size:.74rem;border:1px solid rgba(20,184,166,.2)}
-    .note{border-left:4px solid var(--accent);background:#ecfeff;color:#164e63;padding:12px 13px;border-radius:12px;margin:12px 0;line-height:1.45}
-    .danger-note{border-left-color:var(--danger);background:#fff1f2;color:#881337}
-    .warning-note{border-left-color:var(--warning);background:#fffbeb;color:#78350f}
-    .history-item{border:1px solid var(--border);border-radius:14px;padding:12px;margin:10px 0;background:#fff}
-    .history-item strong{display:block;color:#10233f}
-    .history-item small{color:#64748b}
-    footer{color:#9fb1c7;text-align:center;font-size:.82rem;margin-top:28px;line-height:1.5}
-    @media print{
-      body{background:white;color:#000}.app-shell{padding:0}header.hero,.tabs,.actions,.dark-panel:not(.print-keep){display:none!important}.panel{box-shadow:none;border:0}.result-card{break-inside:avoid}.grid{display:block}.print-only{display:block!important}
-    }
+    textarea:focus,input:focus,select:focus{border-color:rgba(94,234,212,.55);box-shadow:0 0 0 4px rgba(94,234,212,.1)}
+    textarea{min-height:150px;resize:vertical;line-height:1.5}
+    label{display:block;font-size:.8rem;color:var(--muted);font-weight:800;letter-spacing:.02em;margin:0 0 7px}
+    .field{margin-bottom:13px}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field-row.three{grid-template-columns:1fr 1fr 1fr}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.chip{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:var(--sub);border-radius:999px;padding:8px 10px;cursor:pointer;font-size:.85rem;transition:.18s}.chip:hover{background:rgba(255,255,255,.12);color:var(--text)}
+    details{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.04);margin:12px 0;overflow:hidden}
+    summary{cursor:pointer;padding:13px 14px;font-weight:850;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+    details .details-body{padding:0 14px 14px}
+    .result{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .answer-card{border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));padding:18px;min-height:165px}
+    .answer-label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.82rem;font-weight:850;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}.answer-label .dot{width:9px;height:9px;border-radius:999px;background:var(--accent)}
+    .answer-title{font-size:1.45rem;font-weight:900;letter-spacing:-.045em;line-height:1.08;margin-bottom:8px}.answer-text{color:var(--sub);line-height:1.55;font-size:.95rem}
+    .confidence{margin-top:14px;height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.confidence span{display:block;height:100%;width:0;background:linear-gradient(90deg,#fb7185,#f59e0b,#34d399);border-radius:999px;transition:width .5s ease}
+    .route{margin-top:16px;display:grid;gap:10px}.step{display:flex;gap:11px;padding:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:16px;align-items:flex-start}.step-num{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:rgba(94,234,212,.12);color:#bffff6;font-weight:900;flex:0 0 auto}.step b{display:block;margin-bottom:3px}.step span{color:var(--muted);font-size:.9rem;line-height:1.4}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:0 18px 14px}.tab{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--sub);border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:800}.tab.active{background:rgba(94,234,212,.14);color:#dffdf8;border-color:rgba(94,234,212,.32)}
+    .tab-content{display:none}.tab-content.active{display:block}
+    .list{display:grid;gap:10px}.notice{border:1px solid rgba(245,158,11,.28);background:rgba(245,158,11,.09);border-radius:18px;padding:13px;color:#fdecc8;line-height:1.45}.safe{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.08);color:#d1fae5}.danger{border-color:rgba(251,113,133,.26);background:rgba(251,113,133,.08);color:#ffe4e9}
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.kpi .box{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:18px;padding:14px}.kpi b{display:block;font-size:1.5rem;letter-spacing:-.05em}.kpi span{color:var(--muted);font-size:.82rem}
+    .knowledge{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.knowledge-card{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:22px;padding:17px}.knowledge-card h3{margin:0 0 8px;font-size:1rem;letter-spacing:-.025em}.knowledge-card p,.knowledge-card li{color:var(--sub);line-height:1.45;font-size:.92rem}.knowledge-card ul{padding-left:18px;margin:10px 0 0}.source-pill{display:inline-block;font-size:.76rem;color:#a7f3d0;border:1px solid rgba(94,234,212,.25);border-radius:999px;padding:5px 8px;margin-bottom:10px;background:rgba(94,234,212,.08)}
+    .history-item{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:16px;padding:12px}.history-item strong{display:block;margin-bottom:4px}.history-item small{color:var(--muted)}
+    .footer{color:var(--muted);font-size:.84rem;line-height:1.55;margin-top:24px;text-align:center}.hidden{display:none!important}
+    .mobile-only{display:none}
+    @media(max-width:1100px){.hero,.grid{grid-template-columns:1fr}.quick-stats{grid-template-columns:repeat(4,1fr)}.result{grid-template-columns:1fr}.knowledge{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){.app,.topbar-inner{width:min(100% - 20px,1400px)}.topbar-inner{align-items:flex-start}.nav{display:none}.mobile-only{display:inline-flex}.hero-card{padding:22px}.quick-stats,.kpi{grid-template-columns:1fr 1fr}.field-row,.field-row.three{grid-template-columns:1fr}.knowledge{grid-template-columns:1fr}.brand-sub{max-width:70vw}.panel-head{display:block}.panel-head .small-btn{margin-top:10px}.answer-title{font-size:1.25rem}}
+    @media print{body{background:white;color:#111}.topbar,.hero,.left-panel,.tabs,.footer,.no-print{display:none!important}.app{width:auto}.panel{box-shadow:none;border:0}.panel-body{padding:0}.answer-card,.step,.notice,.knowledge-card{background:white;color:#111;border-color:#ddd}.answer-text,.step span,.knowledge-card p,.knowledge-card li,.panel-note{color:#333}}
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="hero">
-      <div class="logo" aria-label="ARC logo">
-        <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
-          <path d="M12 42C8 26 20 12 37 12c8 0 14 3 19 8" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
-          <path d="M47 25v20c0 3-2 5-5 5H22c-3 0-5-2-5-5V25l15-11 15 11Z" fill="rgba(255,255,255,.18)" stroke="white" stroke-width="3"/>
-          <path d="M32 25v16M24 33h16" stroke="white" stroke-width="5" stroke-linecap="round"/>
-        </svg>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M32 7 54 19v26L32 57 10 45V19L32 7Z" fill="rgba(255,255,255,.92)"/><path d="M22 40V25.5c0-4.2 3.5-7.5 7.8-7.5h7.6c4.1 0 7.6 3.3 7.6 7.5V40h-8.2V27.2c0-1.6-1-2.6-2.5-2.6h-1.9c-1.5 0-2.5 1-2.5 2.6V40H22Z" fill="#101827"/><path d="M19 44h26" stroke="#101827" stroke-width="5" stroke-linecap="round"/></svg>
       </div>
       <div>
-        <h1>Acute Referral Centre App</h1>
-        <p class="subtitle">ARC Responsibility & Admission Decision Support — SLAM-focused triage, Who Pays logic, Trusted Assessment prompts and escalation guidance.</p>
+        <div class="brand-title">ARC Resolve</div>
+        <div class="brand-sub">Acute Referral Centre App · SLAM decision support</div>
       </div>
-      <div class="badge-row">
-        <span class="pill">Offline-ready</span>
-        <span class="pill">No server required</span>
-        <span class="pill">Policy-based</span>
-      </div>
-    </header>
-
-    <div class="grid">
-      <main class="panel">
-        <div class="section-title"><span class="dot"></span><h2>1. Scenario analyser</h2></div>
-        <div class="note danger-note"><strong>Confidentiality:</strong> do not enter names, NHS numbers, exact DOB, addresses or other patient-identifiable data. Use anonymised scenarios only.</div>
-        <label for="scenario">Type the work scenario</label>
-        <textarea id="scenario" placeholder="Example: Adult patient is NFA, presented at KCH A&E, not open to another trust, previously admitted to Oxleas 4 months ago, admission now required after liaison assessment..."></textarea>
-        <p class="hint">The app reads the scenario and the structured fields below. Structured fields improve accuracy when the free text is unclear.</p>
-
-        <div class="form-grid">
-          <div>
-            <label for="age">Age</label>
-            <input id="age" type="number" min="0" max="120" placeholder="e.g. 45" />
-          </div>
-          <div>
-            <label for="presentationSite">Current presentation site</label>
-            <select id="presentationSite">
-              <option value="">Select if known</option>
-              <option>KCH - King’s College Hospital</option>
-              <option>CUH - Croydon University Hospital</option>
-              <option>UHL - University Hospital Lewisham</option>
-              <option>STH - St Thomas’ Hospital</option>
-              <option>SLAM HBPoS / Place of Safety</option>
-              <option>External A&E</option>
-              <option>External Place of Safety</option>
-              <option>Police custody</option>
-              <option>Community / home</option>
-            </select>
-          </div>
-          <div>
-            <label for="currentBorough">Current / usual residence borough</label>
-            <select id="currentBorough">
-              <option value="">Unknown / not stated</option>
-              <option>Croydon</option><option>Lambeth</option><option>Lewisham</option><option>Southwark</option>
-              <option>Bexley</option><option>Bromley</option><option>Greenwich</option>
-              <option>Kingston</option><option>Merton</option><option>Richmond</option><option>Sutton</option><option>Wandsworth</option>
-              <option>Camden</option><option>Islington</option><option>Hackney</option><option>Newham</option><option>Tower Hamlets</option>
-              <option>Other London borough</option><option>Outside London</option>
-            </select>
-          </div>
-          <div>
-            <label for="openTrust">Open to CMHT / current MH trust</label>
-            <select id="openTrust">
-              <option value="">Not known / not open</option>
-              <option>SLAM CMHT / PCMHT</option>
-              <option>Another mental health trust</option>
-              <option>Private / independent hospital</option>
-              <option>CAMHS</option>
-              <option>Older Adult / MHOA</option>
-            </select>
-          </div>
-          <div>
-            <label for="otherTrustName">Other trust name, if known</label>
-            <input id="otherTrustName" type="text" placeholder="e.g. Oxleas, SWLSTG, West London..." />
-          </div>
-          <div>
-            <label for="gpIcb">GP / ICB evidence</label>
-            <input id="gpIcb" type="text" placeholder="e.g. GP associated with SEL ICB" />
-          </div>
-          <div>
-            <label for="recentTrust">Recent MH admission trust</label>
-            <input id="recentTrust" type="text" placeholder="Required mainly for NFA + within 6 months" />
-          </div>
-          <div>
-            <label for="decision">Required outcome</label>
-            <select id="decision">
-              <option value="admission">Admission / bed required today</option>
-              <option value="htt">HTT requested</option>
-              <option value="mha">MHA assessment / planned MHA</option>
-              <option value="advice">Responsibility advice only</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="check-grid">
-          <label class="check"><input id="nfa" type="checkbox"><span>No fixed abode / no settled address</span></label>
-          <label class="check"><input id="s136" type="checkbox"><span>Detained under Section 136</span></label>
-          <label class="check"><input id="s135" type="checkbox"><span>Section 135 / home MHA pathway</span></label>
-          <label class="check"><input id="mhaDetention" type="checkbox"><span>Section 2/3/4 detention or likely formal admission</span></label>
-          <label class="check"><input id="recent6" type="checkbox"><span>NFA + admitted to another trust within past 6 months</span></label>
-          <label class="check"><input id="overseas" type="checkbox"><span>Overseas visitor / no GP and resident outside UK</span></label>
-          <label class="check"><input id="specialised" type="checkbox"><span>Specialised / NHS England commissioned service</span></label>
-          <label class="check"><input id="olderNeeds" type="checkbox"><span>Older adult needs / dementia / frailty considerations</span></label>
-        </div>
-
-        <div class="actions">
-          <button class="primary" onclick="analyseCase()">Analyse responsibility</button>
-          <button class="secondary" onclick="loadExample()">Load example</button>
-          <button class="light-ghost" onclick="clearForm()">Clear</button>
-        </div>
-
-        <section id="result" class="result-card" aria-live="polite">
-          <h3>Decision output will appear here</h3>
-          <p class="hint">Enter a scenario and select “Analyse responsibility”.</p>
-        </section>
-      </main>
-
-      <aside class="dark-panel panel print-keep">
-        <div class="tabs" role="tablist">
-          <button class="tab active" data-tab="knowledge" onclick="showTab('knowledge')">Knowledge</button>
-          <button class="tab" data-tab="trusted" onclick="showTab('trusted')">Trusted Assessment</button>
-          <button class="tab" data-tab="escalation" onclick="showTab('escalation')">Escalation</button>
-          <button class="tab" data-tab="history" onclick="showTab('history')">History</button>
-        </div>
-
-        <div id="knowledge" class="tab-panel active">
-          <div class="section-title"><span class="dot"></span><h2>Knowledge base</h2></div>
-          <input id="kbSearch" type="text" placeholder="Search rules, e.g. NFA, s136, Who Pays" oninput="renderKnowledge()" />
-          <div id="kbList"></div>
-        </div>
-
-        <div id="trusted" class="tab-panel">
-          <div class="section-title"><span class="dot"></span><h2>Trusted Assessment verbal prompt</h2></div>
-          <div class="knowledge-card"><h3>1. Why acute care?</h3><p>What will admission or HTT achieve? Have reasonable community alternatives been explored and ruled out?</p></div>
-          <div class="knowledge-card"><h3>2. Demographics and unique needs</h3><p>Communicate age, presentation site, legal status, safeguarding, gender/ward needs, disability, language, cultural, physical-health and neurodevelopmental needs.</p></div>
-          <div class="knowledge-card"><h3>3. Holistic risk formulation</h3><p>Summarise biological, psychological and social risk formulation, current MSE, diagnosis/impression, dynamic risks and protective factors.</p></div>
-          <div class="knowledge-card"><h3>4. Risk management plan</h3><p>Explain how risk will be managed while waiting, during conveyance and at handover, including risk to self, others and from others.</p></div>
-          <button class="ghost" onclick="copyTrustedTemplate()">Copy verbal referral template</button>
-        </div>
-
-        <div id="escalation" class="tab-panel">
-          <div class="section-title"><span class="dot"></span><h2>Escalation quick guide</h2></div>
-          <div class="knowledge-card"><h3>Provider / bed responsibility dispute</h3><p>Start bed manager/facility coordinator to bed manager. Escalate to on-call manager, then on-call director, then Surge / NHSE route where unresolved or breach risk is developing.</p></div>
-          <div class="knowledge-card"><h3>Do not delay care</h3><p>Funding or commissioner uncertainty must not delay necessary assessment, treatment or admission. Use without-prejudice funding resolution where needed.</p></div>
-          <div class="knowledge-card"><h3>Operational triggers</h3><p>HBPoS access delay over 4 hours: escalate to Surge. Inpatient admission delay over 6 hours: escalate. Delay over 12 hours: formal reporting / RCA process.</p></div>
-        </div>
-
-        <div id="history" class="tab-panel">
-          <div class="section-title"><span class="dot"></span><h2>Local case history</h2></div>
-          <p class="subtitle">Stored only in this browser. Do not store identifiable patient data.</p>
-          <div id="historyList"></div>
-          <button class="ghost" onclick="clearHistory()">Clear history</button>
-        </div>
-      </aside>
     </div>
-
-    <footer>
-      Decision-support tool only. Confirm final responsibility using current local policy, senior ARC/bed management advice and commissioner guidance. Built from the supplied ARC Guide, London Mental Health Compact, Trusted Assessment Framework, NHS England Who Pays guidance and SLAM MHOA transfer policy.
-    </footer>
+    <div class="nav" role="navigation" aria-label="Primary">
+      <button class="active" data-jump="analyse">Analyse</button>
+      <button data-jump="knowledge">Rules</button>
+      <button data-jump="scripts">Scripts</button>
+      <button data-jump="history">History</button>
+    </div>
+    <button class="small-btn mobile-only" onclick="document.getElementById('analyse').scrollIntoView()">Start</button>
   </div>
+</header>
+<main class="app">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-card">
+      <div class="eyebrow">⚡ Fast responsibility decision support</div>
+      <h1 id="hero-title">Who accepts? Who pays? What next?</h1>
+      <p class="lead">A cleaner, faster ARC tool for resolving provider responsibility disputes. Type a work scenario or complete the focused facts. The app gives a likely accepting Trust, likely commissioner route, escalation steps, and a copy-ready dispute response.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('scenario').focus()">Analyse a scenario</button>
+        <button class="btn btn-secondary" onclick="loadExample('s136')">Try S136 example</button>
+        <button class="btn btn-secondary" onclick="loadExample('nfa')">Try NFA example</button>
+      </div>
+    </div>
+    <div class="quick-stats">
+      <div class="stat"><span class="tag">Compact</span><b>12h</b><span>maximum inpatient admission wait from arrival before formal investigation/reporting.</span></div>
+      <div class="stat"><span class="tag">Escalate</span><b>6h</b><span>escalate to Surge if waiting for inpatient admission beyond this point.</span></div>
+      <div class="stat"><span class="tag">Trusted</span><b>4</b><span>core verbal elements required before receiver should honour the decision.</span></div>
+      <div class="stat"><span class="tag">ARC</span><b>1st</b><span>least restrictive option: admission is last resort after alternatives ruled out.</span></div>
+    </div>
+  </section>
 
+  <section id="analyse" class="grid">
+    <aside class="panel left-panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Case input</div>
+          <div class="panel-note">Do not enter names, NHS numbers, dates of birth or other patient-identifiable information.</div>
+        </div>
+        <button class="small-btn" onclick="resetForm()">Reset</button>
+      </div>
+      <div class="panel-body">
+        <div class="field">
+          <label for="scenario">Type the work scenario</label>
+          <textarea id="scenario" placeholder="Example: NFA patient detained under s136 in Lambeth, taken to an external POS because no SLAM POS capacity. Not open to another CMHT. Needs admission."></textarea>
+        </div>
+        <div class="chips" aria-label="Common scenarios">
+          <button class="chip" onclick="loadExample('slamcmht')">SLAM CMHT</button>
+          <button class="chip" onclick="loadExample('external')">External CMHT</button>
+          <button class="chip" onclick="loadExample('prison')">Prison transfer</button>
+          <button class="chip" onclick="loadExample('older')">Older adult</button>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="runAnalysis()">Analyse now</button>
+        <details open>
+          <summary>Focused facts <span>▾</span></summary>
+          <div class="details-body">
+            <div class="field-row">
+              <div class="field"><label for="requestType">Request type</label><select id="requestType"><option value="admission">Admission today</option><option value="htt">HTT request</option><option value="mha">Planned MHA assessment</option><option value="ctorecall">CTO recall</option><option value="mffd">MFFD return to SLAM</option><option value="private">Transfer from private</option><option value="prison">Prison transfer</option></select></div>
+              <div class="field"><label for="ageGroup">Age / service</label><select id="ageGroup"><option value="adult">Working-age adult</option><option value="older">Older adult / 65+</option><option value="cyp">Child or young person</option></select></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="knownService">Open service</label><select id="knownService"><option value="unknown">Unknown / not stated</option><option value="slam">SLAM CMHT / PCMHT</option><option value="external">External CMHT / PCMHT</option><option value="none">Not open to CMHT</option></select></div>
+              <div class="field"><label for="externalTrust">External / recent Trust</label><input id="externalTrust" placeholder="e.g. Oxleas, SWLSTG" /></div>
+            </div>
+            <div class="field-row three">
+              <div class="field"><label for="residenceBorough">Usual residence borough</label><select id="residenceBorough"></select></div>
+              <div class="field"><label for="presentationBorough">Presented / assessed borough</label><select id="presentationBorough"></select></div>
+              <div class="field"><label for="gpBorough">GP borough</label><select id="gpBorough"></select></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="presentationSite">Presentation site</label><select id="presentationSite"><option value="">Not stated</option><option>KCH / King’s College Hospital</option><option>CUH / Croydon University Hospital</option><option>UHL / University Hospital Lewisham</option><option>STH / St Thomas’ Hospital</option><option>Maudsley Hospital</option><option>External A&E / POS</option><option>Police custody</option><option>Community</option></select></div>
+              <div class="field"><label for="nfa">Accommodation</label><select id="nfa"><option value="no">Has address / not stated</option><option value="yes">NFA / no fixed abode</option><option value="unknown">Address unclear</option></select></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="legalPathway">Legal / pathway</label><select id="legalPathway"><option value="informal">Informal / not stated</option><option value="s136">Section 136</option><option value="s135">Section 135</option><option value="s2s3">MHA assessment likely S2/S3</option><option value="custody">Police custody / remand</option><option value="prison">Prison transfer</option></select></div>
+              <div class="field"><label for="detentionBorough">S136 first detained borough</label><select id="detentionBorough"></select></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="recentAdmission">NFA admission to another Trust within 6 months?</label><select id="recentAdmission"><option value="unknown">Unknown / not applicable</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+              <div class="field"><label for="waitHours">Waiting hours since arrival/referral</label><input id="waitHours" type="number" min="0" step="0.5" placeholder="e.g. 6" /></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="gpIcb">Known GP-associated ICB</label><input id="gpIcb" placeholder="e.g. South East London ICB" /></div>
+              <div class="field"><label for="specialCase">Special case</label><select id="specialCase"><option value="none">None / not stated</option><option value="section117">S117 aftercare / previous detention</option><option value="chc">CHC / continuing care placement</option><option value="dementia">Primary dementia / older adult needs</option><option value="secure">Secure / specialised service</option></select></div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Decision output</div>
+          <div class="panel-note">Designed for rapid ARC triage, not as a replacement for senior clinical or commissioner decision-making.</div>
+        </div>
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="small-btn" onclick="copySummary()">Copy summary</button>
+          <button class="small-btn" onclick="saveCase()">Save</button>
+          <button class="small-btn" onclick="window.print()">Print</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="emptyState" class="notice safe">Enter a scenario or select the focused facts, then press <strong>Analyse now</strong>. The answer will show provider responsibility, payment route, and dispute escalation wording.</div>
+        <div id="decisionOutput" class="hidden">
+          <div class="result">
+            <div class="answer-card">
+              <div class="answer-label"><span class="dot"></span> Accepting provider</div>
+              <div class="answer-title" id="providerTitle">—</div>
+              <div class="answer-text" id="providerReason">—</div>
+              <div class="confidence"><span id="providerConfidence"></span></div>
+            </div>
+            <div class="answer-card">
+              <div class="answer-label"><span class="dot" style="background:var(--accent2)"></span> Who pays / commissioner route</div>
+              <div class="answer-title" id="payerTitle">—</div>
+              <div class="answer-text" id="payerReason">—</div>
+              <div class="confidence"><span id="payerConfidence"></span></div>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="box"><b id="riskFlag">—</b><span>risk/escalation status</span></div>
+            <div class="box"><b id="nextActionKpi">—</b><span>next action</span></div>
+            <div class="box"><b id="serviceBoroughKpi">—</b><span>ARC service borough</span></div>
+            <div class="box"><b id="confidenceKpi">—</b><span>overall confidence</span></div>
+          </div>
+          <div class="tabs no-print">
+            <button class="tab active" data-tab="actionTab">Action plan</button>
+            <button class="tab" data-tab="traceTab">Rule trace</button>
+            <button class="tab" data-tab="missingTab">Missing facts</button>
+            <button class="tab" data-tab="disputeTab">Copy-ready dispute wording</button>
+          </div>
+          <div id="actionTab" class="tab-content active"><div class="route" id="actionList"></div></div>
+          <div id="traceTab" class="tab-content"><div class="route" id="traceList"></div></div>
+          <div id="missingTab" class="tab-content"><div class="route" id="missingList"></div></div>
+          <div id="disputeTab" class="tab-content"><textarea id="disputeText" style="min-height:300px"></textarea><div style="margin-top:10px"><button class="btn btn-primary" onclick="copyDispute()">Copy dispute wording</button></div></div>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="knowledge" class="panel" style="margin-top:18px">
+    <div class="panel-head"><div><div class="panel-title">Core rules built into the app</div><div class="panel-note">Condensed into operational ARC logic for rapid use.</div></div></div>
+    <div class="panel-body knowledge">
+      <article class="knowledge-card"><span class="source-pill">ARC Guide</span><h3>SLAM first checks</h3><p>SLAM is indicated where the patient is under SLAM CMHT/PCMHT, lives in a SLAM borough and is not open elsewhere, is NFA presenting in a SLAM site and not open elsewhere, or is NFA detained under s136 in a SLAM borough.</p></article>
+      <article class="knowledge-card"><span class="source-pill">London Compact</span><h3>Provider responsibility</h3><p>Adult admission is normally accepted by the Mental Health Trust for usual residence. If no residence is known, use the Trust closest to where assessed; for s136, use where first detained.</p></article>
+      <article class="knowledge-card"><span class="source-pill">Who Pays?</span><h3>Commissioner route</h3><p>For ICB services, GP-associated ICB is normally responsible. If no GP, use usual residence. Funding uncertainty must not delay necessary assessment, care or treatment.</p></article>
+      <article class="knowledge-card"><span class="source-pill">Trusted Assessment</span><h3>Verbal decision</h3><ul><li>Why acute care and what admission achieves.</li><li>Reasonable alternatives explored.</li><li>Demographics and unique needs.</li><li>Holistic risk formulation and current risk management.</li></ul></article>
+      <article class="knowledge-card"><span class="source-pill">Escalation</span><h3>Dispute pathway</h3><p>Escalate bed manager/facility coordinator → on-call manager → on-call director → Surge/NHSE. Patient access should continue while responsibility is clarified.</p></article>
+      <article class="knowledge-card"><span class="source-pill">Older adults</span><h3>MHOA prompt</h3><p>Consider PMOA/MHOA where primary dementia, older adult needs, frailty/physical illness complicating mental illness, or ageing-related needs are central.</p></article>
+    </div>
+  </section>
+
+  <section id="scripts" class="panel" style="margin-top:18px">
+    <div class="panel-head"><div><div class="panel-title">Quick scripts</div><div class="panel-note">Short phrases for difficult phone calls. Edit before use.</div></div></div>
+    <div class="panel-body knowledge">
+      <article class="knowledge-card"><h3>Trusted Assessment challenge</h3><p>“The assessment has covered the four Trusted Assessment elements: why acute care is required, alternatives explored, demographics/unique needs, and holistic risk management. On that basis, please confirm acceptance or identify the exact outstanding clinical question.”</p></article>
+      <article class="knowledge-card"><h3>Funding dispute</h3><p>“Funding uncertainty should not delay necessary care. Please confirm the interim arrangement and we can resolve commissioner responsibility through the appropriate escalation route.”</p></article>
+      <article class="knowledge-card"><h3>No bed available</h3><p>“The admission decision has been made. Please confirm actions taken to free capacity or source an alternative bed, and provide a timescale. If not resolved, we will escalate according to the Compact pathway.”</p></article>
+    </div>
+  </section>
+
+  <section id="history" class="panel" style="margin-top:18px">
+    <div class="panel-head"><div><div class="panel-title">Local history</div><div class="panel-note">Stored only in this browser. Do not save identifiable patient details.</div></div><button class="small-btn" onclick="clearHistory()">Clear history</button></div>
+    <div class="panel-body"><div id="historyList" class="list"></div></div>
+  </section>
+
+  <p class="footer">ARC Resolve is a local decision-support prototype. It does not connect to NHS systems, does not determine legal responsibility, and should be checked against current Trust policy, senior clinical advice and commissioner guidance. Avoid patient-identifiable information.</p>
+</main>
 <script>
-const SLAM_BOROUGHS = ["croydon","lambeth","lewisham","southwark"];
-const SLAM_SITES = ["kch","king’s college","kings college","cuh","croydon university","uhl","university hospital lewisham","sth","st thomas","slam hbpos","slam place"];
-const TRUST_HINTS = {
-  "croydon":"South London and Maudsley NHS Foundation Trust (SLAM)",
-  "lambeth":"South London and Maudsley NHS Foundation Trust (SLAM)",
-  "lewisham":"South London and Maudsley NHS Foundation Trust (SLAM)",
-  "southwark":"South London and Maudsley NHS Foundation Trust (SLAM)",
-  "bexley":"Oxleas NHS Foundation Trust",
-  "bromley":"Oxleas NHS Foundation Trust",
-  "greenwich":"Oxleas NHS Foundation Trust",
-  "kingston":"South West London and St George’s Mental Health NHS Trust",
-  "merton":"South West London and St George’s Mental Health NHS Trust",
-  "richmond":"South West London and St George’s Mental Health NHS Trust",
-  "sutton":"South West London and St George’s Mental Health NHS Trust",
-  "wandsworth":"South West London and St George’s Mental Health NHS Trust",
-  "hackney":"East London NHS Foundation Trust",
-  "newham":"East London NHS Foundation Trust",
-  "tower hamlets":"East London NHS Foundation Trust",
-  "camden":"Camden and Islington NHS Foundation Trust",
-  "islington":"Camden and Islington NHS Foundation Trust"
+const BOROUGHS=["Not stated","Barking and Dagenham","Barnet","Bexley","Brent","Bromley","Camden","City of London","Croydon","Ealing","Enfield","Greenwich","Hackney","Hammersmith and Fulham","Haringey","Harrow","Havering","Hillingdon","Hounslow","Islington","Kensington and Chelsea","Kingston upon Thames","Lambeth","Lewisham","Merton","Newham","Redbridge","Richmond upon Thames","Southwark","Sutton","Tower Hamlets","Waltham Forest","Wandsworth","Westminster","Outside London","Unknown"];
+const TRUST_BY_BOROUGH={
+  "Croydon":"South London and Maudsley NHS Foundation Trust (SLAM)","Lambeth":"South London and Maudsley NHS Foundation Trust (SLAM)","Lewisham":"South London and Maudsley NHS Foundation Trust (SLAM)","Southwark":"South London and Maudsley NHS Foundation Trust (SLAM)",
+  "Bexley":"Oxleas NHS Foundation Trust","Bromley":"Oxleas NHS Foundation Trust","Greenwich":"Oxleas NHS Foundation Trust",
+  "Kingston upon Thames":"South West London and St George’s Mental Health NHS Trust","Merton":"South West London and St George’s Mental Health NHS Trust","Richmond upon Thames":"South West London and St George’s Mental Health NHS Trust","Sutton":"South West London and St George’s Mental Health NHS Trust","Wandsworth":"South West London and St George’s Mental Health NHS Trust",
+  "Ealing":"West London NHS Trust","Hammersmith and Fulham":"West London NHS Trust","Hounslow":"West London NHS Trust",
+  "Brent":"Central and North West London NHS Foundation Trust","Harrow":"Central and North West London NHS Foundation Trust","Hillingdon":"Central and North West London NHS Foundation Trust","Kensington and Chelsea":"Central and North West London NHS Foundation Trust","Westminster":"Central and North West London NHS Foundation Trust",
+  "City of London":"East London NHS Foundation Trust","Hackney":"East London NHS Foundation Trust","Newham":"East London NHS Foundation Trust","Tower Hamlets":"East London NHS Foundation Trust",
+  "Barking and Dagenham":"North East London NHS Foundation Trust","Havering":"North East London NHS Foundation Trust","Redbridge":"North East London NHS Foundation Trust","Waltham Forest":"North East London NHS Foundation Trust",
+  "Barnet":"Barnet, Enfield and Haringey Mental Health NHS Trust","Enfield":"Barnet, Enfield and Haringey Mental Health NHS Trust","Haringey":"Barnet, Enfield and Haringey Mental Health NHS Trust",
+  "Camden":"Camden and Islington NHS Foundation Trust","Islington":"Camden and Islington NHS Foundation Trust"
 };
-const KNOWLEDGE = [
-  {
-    title:"ARC first principle: gatekeeping and least restrictive care",
-    source:"ARC GUIDE p.2",
-    tags:["ARC","HTT","least restrictive","gatekeeping"],
-    text:"ARC should gatekeep for the Trust, ensure right care at the right time, and treat inpatient admission as a last resort after alternatives are explored. HTT is an alternative to admission, not routine follow-up after crisis presentation."
-  },
-  {
-    title:"SLAM responsibility: CMHT, residence, NFA and S136",
-    source:"ARC GUIDE p.3",
-    tags:["SLAM","CMHT","NFA","S136","usual residence"],
-    text:"Patient usually belongs to SLAM where they are under SLAM CMHT/PCMHT; or live in Croydon, Lambeth, Lewisham or Southwark and are not open to an external CMHT; or are NFA and presented within a SLAM site; or are NFA and detained under s136 in a SLAM borough. NFA patients admitted to another Trust within 6 months may remain that Trust’s responsibility unless open to a different CMHT."
-  },
-  {
-    title:"Service borough sequence",
-    source:"ARC GUIDE p.13",
-    tags:["service borough","CMHT","address","GP","NFA"],
-    text:"Select service borough by the CMHT team first; if no team, use where the person lives; if not available, use GP; if NFA, use the borough where they presented."
-  },
-  {
-    title:"Who Pays general rule",
-    source:"NHS England Who Pays? 2024, para 10.2",
-    tags:["Who Pays","ICB","GP","usual residence","payer"],
-    text:"For ICB-commissioned services, GP registration determines the responsible ICB. If not registered with a GP, use the ICB where the person is usually resident. Exceptions take precedence."
-  },
-  {
-    title:"Do not delay care due to funding uncertainty",
-    source:"NHS England Who Pays? 2024, paras 1.9–1.10 and 7.4",
-    tags:["dispute","delay","funding","commissioner"],
-    text:"Necessary assessment, care or treatment should not be refused or delayed because of uncertainty about the responsible commissioner. Where unresolved, commissioners should make without-prejudice arrangements and share costs pending resolution."
-  },
-  {
-    title:"MHA detention and s117 aftercare payer rule",
-    source:"NHS England Who Pays? 2024, para 18.3",
-    tags:["MHA","section 117","detention","originating ICB"],
-    text:"For first detention under the MHA on or after 1 July 2022, the ICB responsible under the general rule at the point of the decision to detain becomes the originating ICB and retains responsibility through detention, s117 aftercare and subsequent related admissions/detentions until discharge from aftercare. S136 alone is not detention for this rule."
-  },
-  {
-    title:"Trusted Assessment: decision must be honoured",
-    source:"Trusted Assessment Framework pp.4–5",
-    tags:["trusted assessment","verbal referral","bed manager","crisis team"],
-    text:"When the four trusted-assessment elements are addressed verbally, the decision to admit to crisis team or inpatient bed should be honoured by the receiver. Written documentation should follow and should not be required before initial acceptance."
-  },
-  {
-    title:"HBPoS responsibility and capacity",
-    source:"Mental Health Compact v5 pp.6–7 and section 4.2.1",
-    tags:["HBPoS","S136","capacity","SMART","surge"],
-    text:"A person detained under s136 should be conveyed to the closest HBPoS. If the closest HBPoS lacks capacity, that facility should identify a suitable alternative or escalate. Once capacity is agreed, police/ambulance should not wait more than 15 minutes. Escalate to Surge if waiting exceeds 4 hours from request."
-  },
-  {
-    title:"Mental health assessment and admission timing",
-    source:"Mental Health Compact v5 summary and appendix pathways",
-    tags:["assessment","admission","4 hours","12 hours","6 hours"],
-    text:"A crisis patient should have physical and mental health assessment and care plan within 4 hours. If admission is required, admission should occur as soon as possible and within 12 hours at most. Escalate if waiting more than 6 hours for inpatient care."
-  },
-  {
-    title:"No bed available at responsible Trust",
-    source:"Mental Health Compact v5, expectations when no suitable bed",
-    tags:["no bed","responsible trust","nearest trust","escalation"],
-    text:"A Mental Health Trust should not refuse admission before formal escalation. It should free capacity or find a suitable NHS/private placement. If it still cannot secure a suitable bed after escalation, the Mental Health Trust closest to where the person was assessed should admit."
-  },
-  {
-    title:"Older Adult / MHOA transfer criteria",
-    source:"SLAM MHOA Transfer Policy v6 pp.6–10",
-    tags:["older adult","MHOA","dementia","frailty","transfer"],
-    text:"Older adult services usually fit primary dementia at any age, mental disorder complicated by frailty/physical illness, ageing/end-of-life needs, first episode functional disorder over 65, and graduate users over 65 with specific old-age psychiatry needs. Transfers should usually happen during stability, not acute crisis, unless clearly in the patient’s best interests."
-  },
-  {
-    title:"ARC EPJS workflow for admission / HTT",
-    source:"ARC GUIDE pp.4–5 and p.29",
-    tags:["EPJS","bed request","virtual ward","HTT","ARC episode"],
-    text:"Open ARC team episode, usually accepted and co-working, then create the bed request. If admitted, complete virtual ward for the correct borough as an internal transfer from ARC. For HTT, open the relevant HTT episode as waiting until verbal handover is complete."
-  }
-];
-function norm(s){return (s||"").toString().toLowerCase().replace(/[’']/g,"'").trim();}
-function field(id){return document.getElementById(id).value || "";}
-function checked(id){return document.getElementById(id).checked;}
-function containsAny(text, arr){return arr.some(x => text.includes(norm(x)));}
-function getFacts(){
-  const scenario = field('scenario');
-  const text = norm([scenario, field('presentationSite'), field('currentBorough'), field('openTrust'), field('otherTrustName'), field('gpIcb'), field('recentTrust')].join(' '));
-  const currentBorough = norm(field('currentBorough'));
-  const openTrust = field('openTrust');
-  const age = parseInt(field('age'),10);
-  return {
-    scenario, text, age: Number.isFinite(age) ? age : null,
-    currentBorough,
-    presentationSite: norm(field('presentationSite')),
-    openTrust,
-    otherTrustName: field('otherTrustName').trim(),
-    recentTrust: field('recentTrust').trim(),
-    gpIcb: field('gpIcb').trim(),
-    decision: field('decision'),
-    nfa: checked('nfa') || /\bnfa\b|no fixed abode|homeless|rough sleep/.test(text),
-    s136: checked('s136') || /s\s*136|section\s*136/.test(text),
-    s135: checked('s135') || /s\s*135|section\s*135/.test(text),
-    mhaDetention: checked('mhaDetention') || /section\s*[234]|s\s*[234]\b|detained|formal admission/.test(text),
-    recent6: checked('recent6') || /6 months|six months|within.*months|recent admission/.test(text),
-    overseas: checked('overseas') || /overseas visitor|resident outside uk|no gp.*outside/.test(text),
-    specialised: checked('specialised') || /high secure|speciali[sz]ed|nhs england commissioned|prisoner|prison transfer/.test(text),
-    olderNeeds: checked('olderNeeds') || /dementia|frailty|frail|older adult|mhoa|pmoa|over 65|aged 65|ageing/.test(text)
-  };
+const ICB_BY_BOROUGH={
+  "Bexley":"South East London ICB","Bromley":"South East London ICB","Greenwich":"South East London ICB","Croydon":"South West London ICB / verify local SEL-SWL commissioning boundary for service","Lambeth":"South East London ICB","Lewisham":"South East London ICB","Southwark":"South East London ICB",
+  "Kingston upon Thames":"South West London ICB","Merton":"South West London ICB","Richmond upon Thames":"South West London ICB","Sutton":"South West London ICB","Wandsworth":"South West London ICB",
+  "Ealing":"North West London ICB","Hammersmith and Fulham":"North West London ICB","Hounslow":"North West London ICB","Brent":"North West London ICB","Harrow":"North West London ICB","Hillingdon":"North West London ICB","Kensington and Chelsea":"North West London ICB","Westminster":"North West London ICB",
+  "City of London":"North East London ICB","Hackney":"North East London ICB","Newham":"North East London ICB","Tower Hamlets":"North East London ICB","Barking and Dagenham":"North East London ICB","Havering":"North East London ICB","Redbridge":"North East London ICB","Waltham Forest":"North East London ICB",
+  "Barnet":"North Central London ICB","Camden":"North Central London ICB","Enfield":"North Central London ICB","Haringey":"North Central London ICB","Islington":"North Central London ICB"
+};
+const SLAM_BOROUGHS=["Croydon","Lambeth","Lewisham","Southwark"];
+const SLAM_SITES=["KCH / King’s College Hospital","CUH / Croydon University Hospital","UHL / University Hospital Lewisham","STH / St Thomas’ Hospital","Maudsley Hospital"];
+const $=id=>document.getElementById(id);
+function fillSelects(){["residenceBorough","presentationBorough","gpBorough","detentionBorough"].forEach(id=>{const sel=$(id); BOROUGHS.forEach(b=>{const o=document.createElement('option'); o.value=b==="Not stated"?"":b; o.textContent=b; sel.appendChild(o);});});}
+fillSelects();
+function factsFromForm(){return {
+  text:$('scenario').value.trim(), requestType:$('requestType').value, ageGroup:$('ageGroup').value, knownService:$('knownService').value, externalTrust:$('externalTrust').value.trim(), residenceBorough:$('residenceBorough').value, presentationBorough:$('presentationBorough').value, gpBorough:$('gpBorough').value, presentationSite:$('presentationSite').value, nfa:$('nfa').value, legalPathway:$('legalPathway').value, detentionBorough:$('detentionBorough').value, recentAdmission:$('recentAdmission').value, waitHours:parseFloat($('waitHours').value || '0'), gpIcb:$('gpIcb').value.trim(), specialCase:$('specialCase').value
+};}
+function setVal(id,v){if($(id)) $(id).value=v;}
+function normaliseText(){const t=$('scenario').value.toLowerCase();
+  if(/\b(nfa|no fixed abode|homeless|rough sleeping)\b/.test(t)) setVal('nfa','yes');
+  if(/s\s*136|section 136/.test(t)) setVal('legalPathway','s136');
+  if(/s\s*135|section 135/.test(t)) setVal('legalPathway','s135');
+  if(/prison|remand|section 47|section 48/.test(t)){setVal('legalPathway','prison');setVal('requestType','prison');}
+  if(/ctO|community treatment order|recall/i.test(t)) setVal('requestType','ctorecall');
+  if(/htt|home treatment/.test(t)) setVal('requestType','htt');
+  if(/mffd|medically fit/.test(t)) setVal('requestType','mffd');
+  if(/slam cmht|under slam|slam service|lewisham cmht|lambeth cmht|southwark cmht|croydon cmht/.test(t)) setVal('knownService','slam');
+  if(/oxleas|swlstg|south west london|cnwl|central and north west|west london|east london|nelft|camden|islington|barnet|enfield|haringey/.test(t)) setVal('knownService','external');
+  if(/not open|no cmht|not known/.test(t)) setVal('knownService','none');
+  for(const b of BOROUGHS){if(b.length>4 && t.includes(b.toLowerCase())){ if(!$('residenceBorough').value) setVal('residenceBorough',b); if(!$('presentationBorough').value && /(present|a&e|ed|assess|custody|pos|place of safety)/.test(t)) setVal('presentationBorough',b); if($('legalPathway').value==='s136' && !$('detentionBorough').value) setVal('detentionBorough',b); }}
+  if(/kch|king/.test(t)) setVal('presentationSite','KCH / King’s College Hospital');
+  if(/cuh|croydon university/.test(t)) setVal('presentationSite','CUH / Croydon University Hospital');
+  if(/uhl|university hospital lewisham|lewisham hospital/.test(t)) setVal('presentationSite','UHL / University Hospital Lewisham');
+  if(/sth|st thomas/.test(t)) setVal('presentationSite','STH / St Thomas’ Hospital');
+  if(/external a&e|external ed|outside slam|non-slam pos|external pos/.test(t)) setVal('presentationSite','External A&E / POS');
+  if(/within (the )?last 6 months|past 6 months|six months/.test(t)) setVal('recentAdmission','yes');
 }
-function determineResponsibleTrust(f){
-  const reasons=[];
-  let trust="Unclear — apply usual residence/current service rules and escalate if needed";
-  let status="warning";
-  const slamAddress = SLAM_BOROUGHS.includes(f.currentBorough) || containsAny(f.text, SLAM_BOROUGHS);
-  const slamSite = containsAny(f.presentationSite + " " + f.text, SLAM_SITES);
-  const openSLAM = f.openTrust.includes('SLAM') || /slam\s*(cmht|pcmht)|south london and maudsley/.test(f.text);
-  const openOther = f.openTrust.includes('Another') || f.otherTrustName || /open to (?!slam)[a-z\s]+cmht|under [a-z\s]+cmht/.test(f.text);
-  if(openSLAM){
-    trust="South London and Maudsley NHS Foundation Trust (SLAM)";
-    status="success";
-    reasons.push("Open to SLAM CMHT/PCMHT, which is the strongest ARC ownership indicator.");
-  } else if(f.nfa && f.recent6 && f.recentTrust){
-    trust=f.recentTrust;
-    status="info";
-    reasons.push("NFA and admitted to another Trust within the last 6 months: ARC Guide indicates that Trust may remain responsible unless the patient is open to a different CMHT.");
-  } else if(f.nfa && f.s136 && (slamAddress || slamSite || /slam borough|croydon|lambeth|lewisham|southwark/.test(f.text))){
-    trust="South London and Maudsley NHS Foundation Trust (SLAM)";
-    status="success";
-    reasons.push("NFA and detained under s136 in a SLAM borough / SLAM pathway.");
-  } else if(f.nfa && slamSite && !openOther){
-    trust="South London and Maudsley NHS Foundation Trust (SLAM)";
-    status="success";
-    reasons.push("NFA, presented at a SLAM acute site and not clearly open to another Trust.");
-  } else if(slamAddress && !openOther){
-    trust="South London and Maudsley NHS Foundation Trust (SLAM)";
-    status="success";
-    reasons.push("Current / usual residence appears to be in a SLAM borough and no external CMHT is identified.");
-  } else if(openOther){
-    trust=f.otherTrustName || "The currently involved external mental health Trust";
-    status="info";
-    reasons.push("Open to another Trust / external CMHT. Use bed manager-to-bed manager discussion and confirm responsibility via Trusted Assessment / Compact escalation.");
-  } else if(f.currentBorough && TRUST_HINTS[f.currentBorough]){
-    trust=TRUST_HINTS[f.currentBorough];
-    status=trust.includes('SLAM') ? "success" : "info";
-    reasons.push("Mapped from current / usual residence borough. Confirm locally because provider contracts can change.");
-  } else if(f.currentBorough && f.currentBorough.includes('outside')){
-    trust="Mental Health Trust for the person’s current / most recent usual residence area";
-    status="info";
-    reasons.push("Outside London selected. Identify the local MH provider and responsible ICB by address/GP; do not delay urgent care while this is confirmed.");
-  } else {
-    reasons.push("Insufficient residence/CMHT/NFA information. Ask: open team, where patient says they usually live, current presentation site, GP/ICB and recent admissions.");
-  }
-  return {trust,status,reasons};
+function trustFor(b){return TRUST_BY_BOROUGH[b] || (b==='Outside London'?'Receiving Trust for usual residence outside London / surrounding county Compact signatory':'Unknown — identify Trust closest to assessment or usual residence');}
+function icbFor(b){return ICB_BY_BOROUGH[b] || (b==='Outside London'?'ICB for usual residence outside London':'ICB for usual residence / GP practice area');}
+function shortTrustName(name){if(!name)return 'Unknown'; if(name.includes('South London and Maudsley'))return 'SLAM'; if(name.includes('South West'))return 'SWLSTG'; if(name.includes('Central and North'))return 'CNWL'; return name.replace('NHS Foundation Trust','').replace('Mental Health NHS Trust','').trim();}
+function serviceBorough(f){ if(f.knownService==='slam' && SLAM_BOROUGHS.includes(f.residenceBorough)) return f.residenceBorough; if(f.residenceBorough) return f.residenceBorough; if(f.gpBorough) return f.gpBorough; if(f.nfa==='yes' && f.presentationBorough) return f.presentationBorough; return ''; }
+function providerDecision(f){const trace=[],missing=[];let title='Insufficient facts',reason='Add open service, usual residence, NFA/s136 status and assessment location.',conf=35;
+  if(f.requestType==='mffd'){return {title:'SLAM return pathway',reason:'MFFD return from a general medical bed should use the ARC MFFD return route if the patient was already admitted to a SLAM bed.',conf:88,trace:['ARC exception route: MFFD return to SLAM does not require full gatekeeping in the same way as a new referral.'],missing:['Confirm original SLAM ward/consultant and current medical fitness.']};}
+  if(f.knownService==='external'){title=f.externalTrust||'External Mental Health Trust'; reason='Patient appears open to an external CMHT/PCMHT. ARC rules treat current external secondary mental health care as a strong responsibility indicator unless an exception applies.'; conf=82; trace.push('Open external CMHT/PCMHT overrides residence-only SLAM checks.');}
+  else if(f.knownService==='slam'){title='SLAM'; reason='Patient is open to SLAM CMHT/PCMHT; ARC first checks indicate the patient belongs to SLAM.'; conf=94; trace.push('ARC first check: under SLAM CMHT/PCMHT → belongs to SLAM.');}
+  else if(f.nfa==='yes' && f.recentAdmission==='yes' && f.externalTrust){title=f.externalTrust; reason='NFA patient with admission to another Trust within the last 6 months remains that Trust’s responsibility for admission unless now under a different CMHT.'; conf=86; trace.push('ARC exception: NFA + admission to another Trust within 6 months → that Trust remains responsible.');}
+  else if(f.nfa==='yes' && f.legalPathway==='s136' && SLAM_BOROUGHS.includes(f.detentionBorough || f.presentationBorough)){title='SLAM'; reason='NFA patient detained under section 136 in a SLAM borough belongs to SLAM even if taken to a non-SLAM place of safety.'; conf=93; trace.push('ARC first check: NFA + s136 detained in SLAM borough → SLAM.');}
+  else if(f.nfa==='yes' && SLAM_SITES.includes(f.presentationSite) && f.knownService!=='external'){title='SLAM'; reason='NFA patient presenting within a SLAM site and not open to another Trust belongs to SLAM under ARC guidance.'; conf=91; trace.push('ARC first check: NFA + presentation in SLAM site + not open elsewhere → SLAM.');}
+  else if(f.residenceBorough && f.residenceBorough!=='Unknown'){const tr=trustFor(f.residenceBorough); title=shortTrustName(tr); reason=`Usual residence is ${f.residenceBorough}. The Compact uses the Mental Health Trust responsible for the person’s usual residence for adult inpatient admission.`; conf=82; trace.push('Compact boundary rule: adult admission follows usual residence.'); if(SLAM_BOROUGHS.includes(f.residenceBorough)) trace.push('Residence is a SLAM borough and no external CMHT is recorded.');}
+  else if(f.nfa==='yes' || f.residenceBorough==='Unknown'){ if(f.legalPathway==='s136' && (f.detentionBorough||f.presentationBorough)){const b=f.detentionBorough||f.presentationBorough; title=shortTrustName(trustFor(b)); reason=`No usual residence is available and this is s136. Use the Mental Health Trust closest to where the patient was first detained under s136: ${b}.`; conf=80; trace.push('Compact: if no address and s136, use where first detained.'); } else if(f.presentationBorough){title=shortTrustName(trustFor(f.presentationBorough)); reason=`No usual residence is available. Use the Mental Health Trust closest to where the patient was assessed/presented: ${f.presentationBorough}.`; conf=74; trace.push('Compact: if residence unknown/no address, closest Trust to assessment accepts.');} }
+  if(f.legalPathway==='prison'||f.requestType==='prison'){title='Prison transfer pathway — verify receiving Trust'; reason='For prison transfers, use the ARC prison transfer route. Provider responsibility should be confirmed through the MHA/prison transfer pathway and bed management, while commissioner responsibility follows prison Who Pays rules.'; conf=Math.max(conf,70); trace.push('Prison pathway identified: apply prison transfer process and commissioner sequence.');}
+  if(f.ageGroup==='older'||f.specialCase==='dementia'){trace.push('Older adult/MHOA prompt: consider primary dementia, frailty, ageing-related needs and service user/carer wishes.');}
+  if(!f.knownService||f.knownService==='unknown') missing.push('Is the patient open to SLAM CMHT/PCMHT or another CMHT/PCMHT?');
+  if(!f.residenceBorough && f.nfa!=='yes') missing.push('What address does the patient say they usually reside at? Proof of address should not be required for the initial decision.');
+  if(f.nfa==='yes' && f.recentAdmission==='unknown') missing.push('If NFA, has the patient been admitted to another Trust within the last 6 months?');
+  if(f.legalPathway==='s136' && !f.detentionBorough) missing.push('Where was the patient first detained under s136?');
+  return {title,reason,conf,trace,missing};}
+function payerDecision(f){let title='Determine by GP / usual residence',reason='For ICB-funded services, use the GP-associated ICB first; if no GP, use usual residence. Exceptions may apply.',conf=58;const trace=[],missing=[];
+  if(f.specialCase==='secure'){title='NHS England / specialised commissioning route'; reason='Secure or prescribed specialised services may be commissioned by NHS England rather than the local ICB. Verify the service category.'; conf=76; trace.push('Who Pays: nature of service determines whether NHSE or ICB commissions.');}
+  else if(f.legalPathway==='prison'||f.requestType==='prison'){title='Prison Who Pays sequence'; reason='For a prisoner requiring transfer to inpatient mental health, check: previous community GP ICB; if none, usual residence outside prison; if neither can be established, ICB where the prison is located.'; conf=82; trace.push('Prison GP is not treated like community GP for responsible commissioner purposes.');}
+  else if(f.specialCase==='section117'){title='Originating ICB for detention/aftercare'; reason='If section 117 aftercare or subsequent detention applies, check the originating ICB rules and previous detention point rather than assuming current GP/residence alone.'; conf=78; trace.push('Who Pays: MHA detention and aftercare exceptions may override general rules.');}
+  else if(f.gpIcb){title=f.gpIcb; reason='A known GP-associated ICB has been entered. Under the general rule, the GP-associated ICB has core responsibility unless an exception applies.'; conf=88; trace.push('Who Pays general rule: GP practice association determines responsible ICB.');}
+  else if(f.gpBorough){title=icbFor(f.gpBorough); reason=`GP borough entered as ${f.gpBorough}; use the ICB associated with the GP practice, then verify against current ODS/ePRACCUR mapping.`; conf=74; trace.push('Use GP practice association, not simply patient address, for payer where GP registration exists.');}
+  else if(f.residenceBorough){title=icbFor(f.residenceBorough); reason=`No GP-associated ICB entered. Use usual residence: ${f.residenceBorough}.`; conf=68; trace.push('Who Pays general rule: if no GP, use usual residence.');}
+  else {missing.push('Which GP practice/ICB is the patient registered with?'); missing.push('If no GP, where does the patient say they usually reside?');}
+  if(f.specialCase==='chc') trace.push('CHC/continuing care placement may retain responsibility with the placing/originating ICB for the relevant package.');
+  return {title,reason,conf,trace,missing};}
+function escalationDecision(f,provider,payer){const actions=[],trace=[],missing=[]; const wait=f.waitHours||0;
+  actions.push(['Secure the clinical decision','Use the Trusted Assessment structure: why acute care, alternatives explored, demographics/unique needs, holistic risk formulation, and how risks are managed while waiting.']);
+  if(f.requestType==='admission') actions.push(['Proceed with admission pathway','Open/maintain ARC episode, complete bed request, and add to bed list if accepted for admission. Admission should not wait for funding dispute resolution.']);
+  if(f.requestType==='htt') actions.push(['HTT pathway','HTT is an alternative to admission, not routine follow-up. Use it only where admission would otherwise be indicated and intensive home treatment can manage risk.']);
+  if(provider.title==='SLAM') actions.push(['SLAM operational step','If accepted for admission, complete virtual ward for the relevant borough and use internal transfer from ARC.']);
+  if(wait>=12){trace.push('12h+ breach: formal reporting/investigation required for inpatient admission delay.'); actions.push(['Breach action','Escalate immediately to senior manager/on-call director/Surge and ensure breach reporting/RCA process is followed.']);}
+  else if(wait>=6){trace.push('6h+ wait: Compact indicates escalation to Surge Services for inpatient admission delays.'); actions.push(['Escalate to Surge','Brief actions taken, barrier to admission, requested action, and current risk management.']);}
+  else if(wait>=4){trace.push('4h+ pressure point: ensure assessment/care plan and escalation planning are active.'); actions.push(['Prevent escalation delay','Confirm assessment outcome, bed search status and risk plan before 6h threshold.']);}
+  else actions.push(['Monitor waiting time','If no bed is immediately available, document bed search, risk plan, and escalation trigger time.']);
+  actions.push(['If disputed','Escalate bed manager/facility coordinator → on-call manager → on-call director → Surge/NHSE while care continues.']);
+  if(f.legalPathway==='s136') actions.push(['S136 safety point','S136 detention cannot be extended beyond 24 hours because of bed shortage; keep senior escalation active.']);
+  const riskFlag=wait>=12?'BREACH':wait>=6?'ESCALATE':wait>=4?'WATCH':'OK';
+  return {actions,trace,missing,riskFlag};}
+function renderRoute(id,items){const el=$(id); el.innerHTML=''; if(!items.length){el.innerHTML='<div class="notice safe">No additional items identified.</div>';return;} items.forEach((it,i)=>{const title=Array.isArray(it)?it[0]:'Rule';const text=Array.isArray(it)?it[1]:it; const div=document.createElement('div'); div.className='step'; div.innerHTML=`<div class="step-num">${i+1}</div><div><b>${escapeHtml(title)}</b><span>${escapeHtml(text)}</span></div>`; el.appendChild(div);});}
+function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]));}
+let lastSummary='';
+function runAnalysis(){normaliseText(); const f=factsFromForm(); const provider=providerDecision(f); const payer=payerDecision(f); const esc=escalationDecision(f,provider,payer); const overall=Math.round((provider.conf+payer.conf)/2);
+  $('emptyState').classList.add('hidden'); $('decisionOutput').classList.remove('hidden');
+  $('providerTitle').textContent=provider.title; $('providerReason').textContent=provider.reason; $('providerConfidence').style.width=provider.conf+'%';
+  $('payerTitle').textContent=payer.title; $('payerReason').textContent=payer.reason; $('payerConfidence').style.width=payer.conf+'%';
+  $('riskFlag').textContent=esc.riskFlag; $('nextActionKpi').textContent=esc.riskFlag==='BREACH'?'Director/Surge':esc.riskFlag==='ESCALATE'?'Surge':'Triage'; $('serviceBoroughKpi').textContent=serviceBorough(f)||'—'; $('confidenceKpi').textContent=overall+'%';
+  renderRoute('actionList',esc.actions); renderRoute('traceList',[...provider.trace,...payer.trace,...esc.trace]); renderRoute('missingList',[...provider.missing,...payer.missing,...esc.missing]);
+  const dispute=buildDispute(f,provider,payer,esc); $('disputeText').value=dispute; lastSummary=buildSummary(f,provider,payer,esc,overall);
 }
-function determinePayer(f){
-  let payer="Unclear — identify GP-associated ICB first, then usual residence if no GP";
-  const reasons=[];
-  if(f.specialised){
-    payer="NHS England, or delegated ICB if the relevant specialised function has been delegated";
-    reasons.push("The service appears to be in an NHS England commissioned category.");
-  } else if(f.mhaDetention){
-    payer="Originating ICB at the point of the initial MHA detention decision";
-    reasons.push("For ICB-commissioned MHA detention/aftercare, Who Pays fixes responsibility at the point of the initial detention decision and continues it through s117 aftercare until discharge from aftercare.");
-  } else if(f.overseas){
-    payer="ICB where the provider site is located, unless the service is commissioned by NHS England";
-    reasons.push("Overseas visitor with no English GP and resident outside the UK: provider-location rule applies for ICB services.");
-  } else if(f.gpIcb){
-    payer=f.gpIcb;
-    reasons.push("GP registration normally determines ICB responsibility for ICB-commissioned services.");
-  } else if(f.currentBorough){
-    payer=`ICB for usual residence in ${field('currentBorough')}`;
-    reasons.push("No GP/ICB entered, so use usual residence as fallback under Who Pays.");
-  } else {
-    reasons.push("Need GP practice/ICB or usual residence. Funding uncertainty must not delay necessary assessment/admission.");
-  }
-  return {payer,reasons};
-}
-function determineActions(f, trustResult){
-  const actions=[];
-  const sources=[];
-  if(f.decision === 'admission'){
-    actions.push("Use the Trusted Assessment Framework on the phone; clinical notes support but should not be required before the receiving service honours the verbal decision.");
-    actions.push("Confirm why acute care is needed, what admission will achieve, alternatives tried, risk formulation, and risk management while waiting/conveying.");
-    if(trustResult.trust.includes('SLAM')){
-      actions.push("For SLAM acceptance: open ARC episode, create bed request, add to bed list, and complete the correct borough virtual ward if accepted for admission.");
-    } else {
-      actions.push("Contact the responsible Trust bed manager/facility coordinator. If they cannot provide a bed in a reasonable timeframe, agree OOA admission/funding or escalate via on-call manager/director and Surge.");
-    }
-    actions.push("Escalate if inpatient admission is delayed beyond 6 hours; 12-hour delay requires formal breach/RCA reporting route.");
-    sources.push("ARC GUIDE pp.3–5, 13, 29", "Trusted Assessment Framework pp.4–6", "Mental Health Compact v5 summary / section 7");
-  } else if(f.decision === 'htt'){
-    actions.push("HTT should be used only where intensive home treatment is a genuine alternative to admission, not routine crisis follow-up.");
-    actions.push("If SLAM HTT accepted: open relevant HTT episode as waiting until verbal handover is completed, then update accepted by the receiving clinician.");
-    sources.push("ARC GUIDE pp.2–4");
-  } else if(f.decision === 'mha'){
-    actions.push("Confirm location of the person: the AMHP legal duty to assess generally falls to the AMHP service for where the person is located when assessment is needed.");
-    actions.push("Do not delay MHA assessment because of uncertainty around bed availability.");
-    sources.push("Mental Health Compact v5 Appendix 1 pathways");
-  } else {
-    actions.push("Use CMHT/open service, usual residence, NFA presentation, s136 location and recent admission history to establish provider responsibility.");
-    actions.push("Use GP-associated ICB first for payer; if no GP, use usual residence; apply MHA/s117 and specialised service exceptions where relevant.");
-    sources.push("ARC GUIDE p.3", "NHS England Who Pays? 2024 paras 10.2, 18.3");
-  }
-  if(f.s136){
-    actions.push("For s136: closest HBPoS should be used; if it lacks capacity, that facility should identify an alternative/escalate. If intoxicated but not incapable, intoxication alone should not exclude HBPoS.");
-    sources.push("Mental Health Compact v5 section 4.2.1");
-  }
-  if(f.olderNeeds || (f.age && f.age >= 65)){
-    actions.push("Consider Older Adult/MHOA pathway if dementia, frailty, physical illness complicating mental disorder, ageing/end-of-life needs, or specialist older adult needs are present. Transfer during acute crisis should only occur if clearly in the patient’s best interests.");
-    sources.push("SLAM MHOA Transfer Policy v6 pp.6–10");
-  }
-  return {actions,sources:[...new Set(sources)]};
-}
-function analyseCase(){
-  const f = getFacts();
-  const trustResult = determineResponsibleTrust(f);
-  const payerResult = determinePayer(f);
-  const actionResult = determineActions(f, trustResult);
-  const confidence = trustResult.status === 'success' ? 'High' : (trustResult.status === 'info' ? 'Moderate' : 'Needs clarification');
-  const statusClass = trustResult.status;
-  const riskWarnings=[];
-  if(!f.scenario && !f.currentBorough && !f.openTrust && !f.nfa){ riskWarnings.push("Very little information entered. The result is only a framework prompt, not a decision."); }
-  if(f.gpIcb && trustResult.trust && !trustResult.trust.includes('Unclear')){ riskWarnings.push("Remember: GP/ICB is mainly payer evidence; bed allocation/provider responsibility should focus on open MH service and usual residence/presentation rules."); }
-  if(f.scenario.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/)){ riskWarnings.push("Check you have not entered patient-identifiable data. Delete names before saving/exporting."); }
-  const html = `
-    <div class="status ${statusClass}">${confidence} confidence</div>
-    <div class="mini-grid">
-      <div class="mini"><div class="k">Likely responsible provider / trust</div><div class="v">${escapeHtml(trustResult.trust)}</div></div>
-      <div class="mini"><div class="k">Likely commissioner / payer</div><div class="v">${escapeHtml(payerResult.payer)}</div></div>
-      <div class="mini"><div class="k">Immediate pathway</div><div class="v">${pathwayLabel(f)}</div></div>
-    </div>
-    ${riskWarnings.length ? `<div class="note warning-note"><strong>Important:</strong><ul class="clean">${riskWarnings.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}
-    <h3>Rationale</h3>
-    <ul class="clean">${trustResult.reasons.concat(payerResult.reasons).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
-    <h3>Recommended next actions</h3>
-    <ul class="clean">${actionResult.actions.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
-    <h3>Sources built into the app</h3>
-    <p>${actionResult.sources.map(s=>`<span class="source-chip">${escapeHtml(s)}</span>`).join('')}</p>
-    <div class="actions">
-      <button class="primary" onclick="copyResult()">Copy result</button>
-      <button class="secondary" onclick="saveHistory()">Save to local history</button>
-      <button class="light-ghost" onclick="window.print()">Print / save PDF</button>
-    </div>
-  `;
-  document.getElementById('result').innerHTML = html;
-  window.__lastResultText = buildPlainResult(f, trustResult, payerResult, actionResult, confidence);
-}
-function pathwayLabel(f){
-  if(f.s136) return 'S136 / HBPoS pathway';
-  if(f.s135) return 'S135 / community MHA pathway';
-  if(f.decision==='htt') return 'HTT gatekeeping pathway';
-  if(f.decision==='mha') return 'MHA assessment pathway';
-  if(f.decision==='admission') return 'Acute inpatient admission pathway';
-  return 'Responsibility advice';
-}
-function buildPlainResult(f, trust, payer, action, confidence){
-  return `Acute Referral Centre App decision support\n\nConfidence: ${confidence}\nLikely responsible provider/trust: ${trust.trust}\nLikely commissioner/payer: ${payer.payer}\nImmediate pathway: ${pathwayLabel(f)}\n\nRationale:\n- ${trust.reasons.concat(payer.reasons).join('\n- ')}\n\nRecommended next actions:\n- ${action.actions.join('\n- ')}\n\nDo not include patient-identifiable information. Confirm final decision with current policy/senior ARC advice.`;
-}
-function escapeHtml(str){return String(str).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-async function copyResult(){
-  if(!window.__lastResultText){return;}
-  await navigator.clipboard.writeText(window.__lastResultText);
-  toast('Result copied');
-}
-function saveHistory(){
-  if(!window.__lastResultText){return;}
-  const item = {at:new Date().toISOString(), text:window.__lastResultText.slice(0,5000)};
-  const history = JSON.parse(localStorage.getItem('arcHistory')||'[]');
-  history.unshift(item);
-  localStorage.setItem('arcHistory', JSON.stringify(history.slice(0,25)));
-  renderHistory();
-  toast('Saved locally');
-}
-function renderHistory(){
-  const history = JSON.parse(localStorage.getItem('arcHistory')||'[]');
-  const box=document.getElementById('historyList');
-  if(!history.length){box.innerHTML='<p class="subtitle">No local history saved.</p>';return;}
-  box.innerHTML=history.map((h,i)=>`<div class="history-item"><strong>Case ${i+1}</strong><small>${new Date(h.at).toLocaleString()}</small><p>${escapeHtml(h.text.split('\n').slice(0,7).join('\n')).replace(/\n/g,'<br>')}...</p></div>`).join('');
-}
-function clearHistory(){localStorage.removeItem('arcHistory');renderHistory();}
-function renderKnowledge(){
-  const q = norm(document.getElementById('kbSearch').value);
-  const items = KNOWLEDGE.filter(k => !q || norm(k.title + ' ' + k.text + ' ' + k.tags.join(' ')).includes(q));
-  document.getElementById('kbList').innerHTML = items.map(k => `
-    <article class="knowledge-card"><h3>${escapeHtml(k.title)}</h3><p>${escapeHtml(k.text)}</p><span class="tag">${escapeHtml(k.source)}</span>${k.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</article>
-  `).join('') || '<p class="subtitle">No matching knowledge item.</p>';
-}
-function showTab(name){
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === name));
-  if(name==='history') renderHistory();
-}
-function loadExample(){
-  document.getElementById('scenario').value = "Adult patient is NFA and presented at KCH A&E. Not open to any external CMHT. Liaison assessment says admission is required today. No physical health reason to delay. GP unknown.";
-  document.getElementById('presentationSite').value = "KCH - King’s College Hospital";
-  document.getElementById('currentBorough').value = "";
-  document.getElementById('openTrust').value = "";
-  document.getElementById('nfa').checked = true;
-  document.getElementById('decision').value = "admission";
-  analyseCase();
-}
-function clearForm(){
-  ['scenario','age','otherTrustName','gpIcb','recentTrust'].forEach(id=>document.getElementById(id).value='');
-  ['presentationSite','currentBorough','openTrust'].forEach(id=>document.getElementById(id).selectedIndex=0);
-  document.getElementById('decision').value='admission';
-  ['nfa','s136','s135','mhaDetention','recent6','overseas','specialised','olderNeeds'].forEach(id=>document.getElementById(id).checked=false);
-  document.getElementById('result').innerHTML='<h3>Decision output will appear here</h3><p class="hint">Enter a scenario and select “Analyse responsibility”.</p>';
-}
-async function copyTrustedTemplate(){
-  const template = `Trusted Assessment verbal referral\n\n1. Why acute care / what will admission or HTT achieve?\n- \nAlternatives explored and ruled out:\n- \n\n2. Demographics and unique needs\n- Age/legal status/presentation site:\n- Safeguarding/physical health/disability/cultural/language/gender needs:\n\n3. Holistic risk formulation\n- Biological:\n- Psychological:\n- Social:\n- Current MSE / clinical impression:\n\n4. Risk management plan\n- Risk to self:\n- Risk to others:\n- Risk from others:\n- Waiting/conveyance/handover plan:`;
-  await navigator.clipboard.writeText(template);
-  toast('Trusted Assessment template copied');
-}
-function toast(msg){
-  const el=document.createElement('div');
-  el.textContent=msg;
-  el.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:11px 15px;border-radius:999px;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.25);font-weight:800';
-  document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
-}
-renderKnowledge();renderHistory();
+function buildSummary(f,pv,py,esc,overall){return `ARC Resolve case summary\n\nLikely accepting provider: ${pv.title}\nReason: ${pv.reason}\n\nLikely payer / commissioner route: ${py.title}\nReason: ${py.reason}\n\nEscalation status: ${esc.riskFlag}\nService borough: ${serviceBorough(f)||'not clear'}\nOverall confidence: ${overall}%\n\nKey actions:\n${esc.actions.map((a,i)=>`${i+1}. ${a[0]} — ${a[1]}`).join('\n')}\n\nImportant: decision support only; verify against current Trust policy and senior/commissioner advice. Do not include patient-identifiable information.`;}
+function buildDispute(f,pv,py,esc){return `ARC / bed management dispute summary\n\nBased on the available facts, the likely accepting provider is: ${pv.title}.\nReason: ${pv.reason}\n\nThe likely commissioner/payment route is: ${py.title}.\nReason: ${py.reason}\n\nThe clinical decision should not be delayed by uncertainty about provider or commissioner responsibility. The Trusted Assessment discussion should focus on:\n1. Why acute care is required and what admission/HTT will achieve.\n2. What reasonable alternatives have been explored.\n3. Demographics and any unique needs.\n4. Holistic risk formulation and how current risks will be managed while waiting.\n\nCurrent escalation status: ${esc.riskFlag}.\nRequested action: please confirm acceptance, bed search actions, interim risk plan and timescale. If responsibility or funding remains disputed, please escalate through bed manager/facility coordinator, on-call manager, on-call director and Surge/NHSE as appropriate, while the patient continues to receive necessary care.\n\nThis is decision-support wording and should be adjusted to the live clinical facts.`;}
+async function copyText(text){try{await navigator.clipboard.writeText(text); toast('Copied');}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Copied');}}
+function copySummary(){ if(!lastSummary) runAnalysis(); copyText(lastSummary); }
+function copyDispute(){ copyText($('disputeText').value); }
+function toast(msg){const n=document.createElement('div'); n.textContent=msg; n.style.cssText='position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0f172a;color:white;padding:12px 16px;border:1px solid rgba(255,255,255,.16);border-radius:999px;z-index:99;box-shadow:0 20px 50px rgba(0,0,0,.35)'; document.body.appendChild(n); setTimeout(()=>n.remove(),1600);}
+function resetForm(){document.querySelectorAll('input,textarea').forEach(e=>e.value='');document.querySelectorAll('select').forEach(e=>e.selectedIndex=0);$('decisionOutput').classList.add('hidden');$('emptyState').classList.remove('hidden');lastSummary='';}
+function saveCase(){ if(!lastSummary) runAnalysis(); const items=JSON.parse(localStorage.getItem('arc_history')||'[]'); items.unshift({date:new Date().toLocaleString(),summary:lastSummary.slice(0,1500),provider:$('providerTitle').textContent,payer:$('payerTitle').textContent}); localStorage.setItem('arc_history',JSON.stringify(items.slice(0,20))); renderHistory(); toast('Saved locally');}
+function renderHistory(){const items=JSON.parse(localStorage.getItem('arc_history')||'[]'); const el=$('historyList'); el.innerHTML=''; if(!items.length){el.innerHTML='<div class="notice">No saved cases yet. Save only anonymised scenarios.</div>';return;} items.forEach((h,i)=>{const div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<strong>${escapeHtml(h.provider)} · ${escapeHtml(h.payer)}</strong><small>${escapeHtml(h.date)}</small><p>${escapeHtml(h.summary.slice(0,220))}...</p><button class="small-btn" onclick="copyText(${JSON.stringify(h.summary)})">Copy</button>`; el.appendChild(div);});}
+function clearHistory(){localStorage.removeItem('arc_history');renderHistory();}
+const examples={
+  s136:'NFA patient detained under section 136 in Lambeth. They were taken to an external place of safety due to capacity. Not open to another CMHT. Assessment concludes inpatient admission is required. Waiting 6 hours.',
+  nfa:'NFA patient presents at King’s College Hospital A&E in crisis. Not open to another CMHT. No admission elsewhere in the last 6 months. Admission requested today.',
+  slamcmht:'Patient is open to Lewisham CMHT under SLAM and presents in ED requiring inpatient admission after alternatives explored.',
+  external:'Patient currently open to Oxleas CMHT but currently staying temporarily in Southwark. Admission requested from A&E. Dispute about whether SLAM should accept.',
+  prison:'Person in prison requires transfer for inpatient mental health assessment under MHA pathway. No community GP is currently listed; previous usual residence reported as Lambeth.',
+  older:'69-year-old with primary dementia and frailty complicating mental health presentation. Question about older adult service involvement and inpatient responsibility.'
+};
+function loadExample(k){resetForm(); $('scenario').value=examples[k]||''; if(k==='s136'){setVal('nfa','yes');setVal('legalPathway','s136');setVal('detentionBorough','Lambeth');setVal('knownService','none');setVal('presentationSite','External A&E / POS');setVal('waitHours','6');}
+ if(k==='nfa'){setVal('nfa','yes');setVal('presentationSite','KCH / King’s College Hospital');setVal('presentationBorough','Southwark');setVal('knownService','none');setVal('recentAdmission','no');}
+ if(k==='slamcmht'){setVal('knownService','slam');setVal('residenceBorough','Lewisham');}
+ if(k==='external'){setVal('knownService','external');setVal('externalTrust','Oxleas NHS Foundation Trust');setVal('residenceBorough','Southwark');}
+ if(k==='prison'){setVal('requestType','prison');setVal('legalPathway','prison');setVal('residenceBorough','Lambeth');}
+ if(k==='older'){setVal('ageGroup','older');setVal('specialCase','dementia');}
+ runAnalysis(); document.getElementById('analyse').scrollIntoView({behavior:'smooth'});}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.jump).scrollIntoView({behavior:'smooth'});}));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));t.classList.add('active');$(t.dataset.tab).classList.add('active');}));
+$('scenario').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter') runAnalysis();});
+renderHistory();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
 </script>
 </body>

@@ -1,11 +1,11 @@
 {
-  "name": "Acute Referral Centre App",
-  "short_name": "ARC App",
+  "name": "ARC Resolve - Acute Referral Centre App",
+  "short_name": "ARC Resolve",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0f766e",
-  "description": "SLAM-focused ARC responsibility and admission decision support tool.",
+  "background_color": "#070b16",
+  "theme_color": "#0b1020",
+  "description": "Decision support for ARC responsibility disputes, Who Pays, trusted assessment and escalation.",
   "icons": [
     {"src":"arc-logo.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ]

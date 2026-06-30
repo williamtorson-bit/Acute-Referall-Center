@@ -1,22 +1,28 @@
-# Acute Referral Centre App - Vercel Ready
+# ARC Resolve — Acute Referral Centre App
 
-This folder is ready to upload to GitHub and deploy on Vercel.
+A Vercel-ready, static decision-support app for ARC provider responsibility, Who Pays/commissioner route, Trusted Assessment prompts and escalation wording.
 
-Important file layout:
+## Deploy on Vercel
+
+1. Unzip this folder.
+2. Upload the files directly to the root of a GitHub repository.
+3. In Vercel, import the repository.
+4. Use:
+   - Framework Preset: Other
+   - Root Directory: ./
+   - Build Command: leave blank
+   - Output Directory: leave blank
+5. Deploy.
+
+## Files required at repository root
 
 - index.html
 - manifest.json
 - arc-logo.svg
 - service-worker.js
 - vercel.json
+- README.md
 
-Do not place these files inside a subfolder unless you set that subfolder as the Vercel Root Directory.
+## Safety
 
-Recommended Vercel settings:
-
-- Framework Preset: Other
-- Build Command: leave blank
-- Output Directory: leave blank or use .
-- Install Command: leave blank
-
-If Vercel shows 404 NOT_FOUND, check that index.html is at the repository root, or set Root Directory to the folder that contains index.html.
+This is decision support only. Do not enter patient-identifiable information. Verify final decisions against current Trust policy, senior ARC/bed management advice and commissioner guidance.
