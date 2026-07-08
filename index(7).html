@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mental Health Compact Responsibility App</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111932;
+      --panel2:#16213f;
+      --card:#ffffff;
+      --muted:#617089;
+      --text:#142033;
+      --white:#f7fbff;
+      --accent:#6ee7f9;
+      --accent2:#8b5cf6;
+      --accent3:#22c55e;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --border:#dbe4f0;
+      --shadow: 0 20px 50px rgba(0,0,0,.22);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;background:
+      radial-gradient(circle at 15% 5%, rgba(110,231,249,.22), transparent 35%),
+      radial-gradient(circle at 80% 0%, rgba(139,92,246,.25), transparent 40%),
+      linear-gradient(135deg,#08111f 0%, #0b1020 45%, #172554 100%);color:var(--white);min-height:100vh}
+    .shell{max-width:1240px;margin:auto;padding:28px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:26px;align-items:stretch;margin-bottom:22px}
+    .hero-card{background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.16);border-radius:30px;padding:34px;box-shadow:var(--shadow);backdrop-filter:blur(12px)}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(110,231,249,.12);color:#cffafe;border:1px solid rgba(110,231,249,.25);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+    h1{font-size:clamp(34px,5vw,60px);line-height:.98;margin:20px 0 14px;letter-spacing:-.05em}
+    .hero p{font-size:18px;line-height:1.58;color:#d9e7fb;max-width:800px;margin:0 0 22px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    a.btn,button.btn{border:0;border-radius:16px;padding:13px 16px;font-weight:800;cursor:pointer;text-decoration:none;color:#071426;background:#e0f2fe;display:inline-flex;align-items:center;gap:8px;transition:.18s transform,.18s box-shadow;font-size:14px}
+    a.btn:hover,button.btn:hover{transform:translateY(-1px);box-shadow:0 10px 25px rgba(0,0,0,.2)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),#c4b5fd);color:#06101c}
+    .btn.dark{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.16)}
+    .btn.green{background:#dcfce7;color:#052e16}.btn.red{background:#fee2e2;color:#7f1d1d}.btn.amber{background:#fef3c7;color:#78350f}
+    .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;height:100%}
+    .stat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:20px}
+    .stat b{font-size:34px;display:block;letter-spacing:-.04em}.stat span{font-size:13px;color:#dbeafe;line-height:1.35;display:block;margin-top:5px}
+    .nav{position:sticky;top:10px;z-index:5;background:rgba(7,14,27,.76);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:9px;display:flex;gap:8px;overflow:auto;margin-bottom:22px;box-shadow:0 8px 30px rgba(0,0,0,.2)}
+    .nav a{white-space:nowrap;text-decoration:none;color:#dbeafe;font-weight:800;font-size:13px;padding:11px 13px;border-radius:15px}.nav a:hover{background:rgba(255,255,255,.11)}
+    section{background:var(--card);color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:30px;padding:26px;margin:22px 0;box-shadow:var(--shadow)}
+    section h2{font-size:28px;letter-spacing:-.03em;margin:0 0 8px} .lead{color:#475569;line-height:1.6;margin:0 0 18px}
+    .grid{display:grid;gap:16px}.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.four{grid-template-columns:repeat(4,1fr)}
+    .card{border:1px solid var(--border);background:#fff;border-radius:22px;padding:18px}.card.soft{background:#f8fbff}.card.darktext{color:#142033}
+    label{display:block;font-weight:800;font-size:13px;color:#22304a;margin-bottom:7px}
+    input,select,textarea{width:100%;padding:12px 13px;border:1px solid #cbd5e1;border-radius:14px;background:#fff;font:inherit;color:#0f172a;outline:none} textarea{min-height:92px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:#60a5fa;box-shadow:0 0 0 4px rgba(96,165,250,.18)}
+    .small{font-size:12px;color:#64748b;line-height:1.5}.muted{color:#64748b}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;background:#eef2ff;color:#3730a3;margin:3px 4px 3px 0}
+    .pill.green{background:#dcfce7;color:#166534}.pill.amber{background:#fef3c7;color:#92400e}.pill.red{background:#fee2e2;color:#991b1b}.pill.blue{background:#dbeafe;color:#1e40af}
+    .result{background:linear-gradient(135deg,#f0f9ff,#faf5ff);border:1px solid #dbeafe;border-radius:24px;padding:20px;margin-top:16px}.result h3{margin:0 0 8px;font-size:22px}.result .decision{font-size:24px;font-weight:900;letter-spacing:-.03em;color:#0f172a;margin:8px 0}
+    .callout{border-left:5px solid #38bdf8;background:#f0f9ff;border-radius:16px;padding:14px 16px;color:#17304c}.callout.warn{border-left-color:#f59e0b;background:#fffbeb}.callout.good{border-left-color:#22c55e;background:#f0fdf4}.callout.bad{border-left-color:#ef4444;background:#fef2f2}
+    .timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:16px 0}.timebox{border:1px solid #dbeafe;border-radius:18px;background:#f8fbff;padding:12px}.timebox b{display:block;font-size:20px;color:#0f172a}.timebox span{display:block;font-size:12px;color:#475569;margin-top:4px;line-height:1.35}
+    .scenario-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.scenario{border:1px solid #e2e8f0;border-radius:20px;padding:16px;background:#fff}.scenario h4{margin:0 0 8px;font-size:16px}.scenario p{font-size:13px;line-height:1.52;color:#475569;margin:0 0 9px}.scenario .answer{font-weight:800;color:#0f172a;background:#f8fafc;border-radius:14px;padding:10px;font-size:13px}
+    .rule-table{width:100%;border-collapse:separate;border-spacing:0 8px}.rule-table th{text-align:left;font-size:12px;color:#475569;text-transform:uppercase;letter-spacing:.06em}.rule-table td{background:#f8fafc;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:12px;font-size:14px;vertical-align:top}.rule-table td:first-child{border-left:1px solid #e2e8f0;border-radius:14px 0 0 14px;font-weight:800}.rule-table td:last-child{border-right:1px solid #e2e8f0;border-radius:0 14px 14px 0}
+    details{border:1px solid #e2e8f0;border-radius:18px;background:#fff;margin:10px 0;overflow:hidden}summary{cursor:pointer;padding:15px 17px;font-weight:900;background:#f8fafc}details .inside{padding:16px;color:#475569;line-height:1.56}
+    .brief{white-space:pre-wrap;border:1px solid #dbeafe;background:#f8fbff;border-radius:18px;padding:16px;line-height:1.55;color:#172033;font-size:14px;min-height:180px}
+    .toast{position:fixed;right:18px;bottom:18px;background:#071426;color:white;border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:13px 15px;box-shadow:var(--shadow);opacity:0;transform:translateY(20px);transition:.2s;z-index:20}.toast.show{opacity:1;transform:translateY(0)}
+    .saved-list{display:grid;gap:10px}.saved-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:12px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.saved-item b{display:block}.saved-item small{color:#64748b}
+    footer{color:#dbeafe;text-align:center;padding:26px;font-size:13px;line-height:1.6}.footer-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:18px}
+
+    .voice-panel{display:grid;grid-template-columns:1fr;gap:14px}
+    .voice-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:800;color:#334155}
+    .rec-dot{width:12px;height:12px;border-radius:999px;background:#94a3b8;display:inline-block;box-shadow:0 0 0 0 rgba(239,68,68,.5)}
+    .rec-dot.recording{background:#ef4444;animation:pulse 1.2s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.55)}70%{box-shadow:0 0 0 12px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+    .transcript-box{min-height:180px;background:#fbfdff}
+    .unsupported{display:none;border-left:5px solid #ef4444;background:#fef2f2;border-radius:16px;padding:14px 16px;color:#7f1d1d}
+    .unsupported.show{display:block}
+    .fact-preview{border:1px dashed #93c5fd;background:#eff6ff;border-radius:18px;padding:14px;color:#1e3a8a;font-size:13px;line-height:1.55;white-space:pre-wrap}
+    @media(max-width:920px){.hero,.two,.three,.four,.timeline,.scenario-list{grid-template-columns:1fr}.shell{padding:16px}.hero-card,section{padding:20px;border-radius:24px}.stat-grid{grid-template-columns:1fr}.nav{top:0;border-radius:0;margin-left:-16px;margin-right:-16px}.rule-table{font-size:12px}.rule-table td{display:block;border:1px solid #e2e8f0;border-radius:12px!important;margin-bottom:-1px}.rule-table thead{display:none}}
+    @media print{body{background:#fff;color:#111}.nav,.actions,.btn,footer{display:none!important}.shell{max-width:none;padding:0}section,.hero-card{box-shadow:none;border:1px solid #ccc}.hero{display:block}.stat-grid{display:none}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">Compact v5 · February 2024 · Decision Support</span>
+        <h1>Mental Health Compact Responsibility App</h1>
+        <p>Use this single-file app to analyse admission responsibility, funding separation, escalation triggers and dispute wording under the London Mental Health Compact. It is designed for finance, bed management, urgent care and operational dispute situations.</p>
+        <div class="actions">
+          <a class="btn primary" href="#voice">Dictate scenario</a>
+          <a class="btn dark" href="#decision">Start responsibility checker</a>
+          <a class="btn dark" href="#scenarios">Review compact scenarios</a>
+          <a class="btn dark" href="#deploy">Vercel deployment</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="stat-grid">
+          <div class="stat"><b>12h</b><span>Maximum admission delay threshold from time of arrival.</span></div>
+          <div class="stat"><b>6h</b><span>Escalate to Surge Services for inpatient admission delay.</span></div>
+          <div class="stat"><b>4h</b><span>Physical and mental health assessment with care plan target.</span></div>
+          <div class="stat"><b>1h</b><span>Mental health service response to referral; internal bed escalation starts early.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="App navigation">
+      <a href="#voice">Voice Capture</a>
+      <a href="#decision">Decision Tool</a>
+      <a href="#brief">Dispute Brief</a>
+      <a href="#scenarios">Scenarios</a>
+      <a href="#rules">Compact Rules</a>
+      <a href="#pathways">Pathways</a>
+      <a href="#saved">Saved Cases</a>
+      <a href="#deploy">Deploy</a>
+    </nav>
+
+
+    <section id="voice">
+      <h2>Voice scenario capture</h2>
+      <p class="lead">Dictate the scenario, then send the transcript into the responsibility checker. This works best in Chrome or Edge over HTTPS after deployment to Vercel. Keep the scenario anonymised unless your organisation has approved identifiable information in this browser.</p>
+      <div id="speechUnsupported" class="unsupported"><strong>Voice recognition is not available in this browser.</strong> Use Chrome or Edge, or type the scenario manually below.</div>
+      <div class="grid two">
+        <div class="card soft voice-panel">
+          <div class="voice-status"><span id="recDot" class="rec-dot"></span><span id="voiceStatus">Ready to dictate</span></div>
+          <div class="actions" style="margin-top:0">
+            <button class="btn primary" type="button" onclick="startDictation()">Start dictation</button>
+            <button class="btn red" type="button" onclick="stopDictation()">Stop</button>
+            <button class="btn dark" type="button" onclick="clearTranscript()">Clear transcript</button>
+          </div>
+          <label for="dictationMode">How to send transcript to checker</label>
+          <select id="dictationMode">
+            <option value="replace">Replace current clinical facts</option>
+            <option value="append">Append to current clinical facts</option>
+          </select>
+          <div class="small">Voice recognition may be processed by the browser provider. Use anonymised operational facts such as: adult patient, NFA, assessed at KCH, GP in Merton, no community team, admission required.</div>
+        </div>
+        <div class="card">
+          <label for="scenarioTranscript">Scenario transcript</label>
+          <textarea id="scenarioTranscript" class="transcript-box" placeholder="Speak or type the scenario here. Example: Adult patient, no fixed abode, assessed in ED at King's College Hospital, GP registered in Merton, no current community team, admission required, responsibility disputed."></textarea>
+          <div class="actions">
+            <button class="btn amber" type="button" onclick="cleanTranscript()">Clean transcript</button>
+            <button class="btn dark" type="button" onclick="extractFactsFromTranscript()">Extract obvious facts</button>
+            <button class="btn green" type="button" onclick="sendTranscriptToChecker(false)">Send to checker</button>
+            <button class="btn primary" type="button" onclick="sendTranscriptToChecker(true)">Send and analyse</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid two" style="margin-top:16px">
+        <div class="callout warn"><strong>Clinical governance:</strong> the transcript is used only in your browser. Review the extracted fields before relying on the output, because browser transcription and simple keyword extraction can misunderstand accents, place names and Trust names.</div>
+        <div class="fact-preview" id="factPreview">Extracted facts will appear here after you click “Extract obvious facts”.</div>
+      </div>
+    </section>
+
+    <section id="decision">
+      <h2>Admission responsibility checker</h2>
+      <p class="lead">Enter the facts as they are known. The app separates <strong>provider admission responsibility</strong> from <strong>ICB/commissioner payment responsibility</strong>, because disputes often arise when those two are treated as the same issue.</p>
+
+      <div class="grid three">
+        <div class="card soft">
+          <label for="caseName">Case reference / patient initials</label>
+          <input id="caseName" placeholder="e.g. LAS-ED-001 / Patient AB" />
+        </div>
+        <div class="card soft">
+          <label for="pathway">Presentation pathway</label>
+          <select id="pathway">
+            <option value="ed">Emergency Department</option>
+            <option value="community">Community / Crisis Team / s135</option>
+            <option value="custody">Police custody</option>
+            <option value="s136">Section 136 / HBPoS</option>
+          </select>
+        </div>
+        <div class="card soft">
+          <label for="ageGroup">Age group</label>
+          <select id="ageGroup">
+            <option value="adult">Adult, 18+</option>
+            <option value="transition">16–17 / approaching 18</option>
+            <option value="child">Under 16</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid four" style="margin-top:16px">
+        <div class="card">
+          <label for="assessedArea">Area where assessed / currently located</label>
+          <input id="assessedArea" placeholder="e.g. Area A / King's College Hospital area" />
+        </div>
+        <div class="card">
+          <label for="detainedArea">Area first detained under s136</label>
+          <input id="detainedArea" placeholder="Only if s136; otherwise leave blank" />
+        </div>
+        <div class="card">
+          <label for="residenceArea">Usual residence / self-stated address area</label>
+          <input id="residenceArea" placeholder="e.g. Merton / Area B / hostel area" />
+        </div>
+        <div class="card">
+          <label for="gpArea">GP registration area</label>
+          <input id="gpArea" placeholder="e.g. Manchester / Area C / none" />
+        </div>
+      </div>
+
+      <div class="grid four" style="margin-top:16px">
+        <div class="card">
+          <label for="knownArea">Ongoing MH team / recent inpatient / s117 area</label>
+          <input id="knownArea" placeholder="If applicable" />
+        </div>
+        <div class="card">
+          <label for="familyArea">Family / support network area</label>
+          <input id="familyArea" placeholder="If relevant" />
+        </div>
+        <div class="card">
+          <label for="currentTrust">Current / requesting Trust</label>
+          <input id="currentTrust" placeholder="Your Trust or current site" />
+        </div>
+        <div class="card">
+          <label for="otherTrust">Other Trust in dispute</label>
+          <input id="otherTrust" placeholder="Trust being asked to accept" />
+        </div>
+      </div>
+
+      <div class="grid three" style="margin-top:16px">
+        <div class="card">
+          <label for="housingStatus">Housing / residence status</label>
+          <select id="housingStatus">
+            <option value="stated">Patient gives current residence</option>
+            <option value="hostel">Hostel / temporary accommodation</option>
+            <option value="family">Residence given by parent/carer/other person</option>
+            <option value="nfa">No fixed abode / no address</option>
+            <option value="outside">Resident outside England</option>
+            <option value="visitor">Overseas visitor staying temporarily with support in England</option>
+          </select>
+        </div>
+        <div class="card">
+          <label for="ongoingCare">Ongoing care exception</label>
+          <select id="ongoingCare">
+            <option value="none">No ongoing MH care / no recent admission / no s117</option>
+            <option value="cmht">Open to community MH team for treatment</option>
+            <option value="sixMonths">Inpatient care within last 6 months</option>
+            <option value="s117">Receiving section 117 aftercare</option>
+          </select>
+        </div>
+        <div class="card">
+          <label for="preference">Patient preference</label>
+          <select id="preference">
+            <option value="nearResidence">Wants care near current residence</option>
+            <option value="ongoingTrust">Wants care from existing / ongoing Trust</option>
+            <option value="nearFamily">Wants care near family/support</option>
+            <option value="unknown">Not known / unable to state</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid three" style="margin-top:16px">
+        <div class="card">
+          <label for="safeTransfer">Transfer to responsible area</label>
+          <select id="safeTransfer">
+            <option value="safe">Safe and clinically appropriate to transfer</option>
+            <option value="unsafe">Long distance / not in best interests now</option>
+            <option value="unknown">Not yet assessed</option>
+          </select>
+        </div>
+        <div class="card">
+          <label for="bedStatus">Bed position</label>
+          <select id="bedStatus">
+            <option value="available">Potential bed available</option>
+            <option value="none">No suitable bed identified</option>
+            <option value="disputed">Responsibility disputed</option>
+          </select>
+        </div>
+        <div class="card">
+          <label for="waitHours">Hours waiting from time of arrival / request</label>
+          <input id="waitHours" type="number" min="0" step="0.5" placeholder="e.g. 6" />
+        </div>
+      </div>
+
+      <div class="grid two" style="margin-top:16px">
+        <div class="card">
+          <label for="clinicalNotes">Brief clinical / operational facts</label>
+          <textarea id="clinicalNotes" placeholder="Risk, MHA status, informal/formal, custody/ED/HBPoS details, capacity issue, etc."></textarea>
+        </div>
+        <div class="card">
+          <label for="financeNotes">Finance / commissioner issue</label>
+          <textarea id="financeNotes" placeholder="GP/ICB area, s117 concern, recharge dispute, out-of-area funding query, etc."></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" type="button" onclick="analyseCase()">Analyse case</button>
+        <button class="btn green" type="button" onclick="saveCase()">Save case locally</button>
+        <button class="btn amber" type="button" onclick="resetForm()">Clear form</button>
+      </div>
+
+      <div id="result" class="result" aria-live="polite">
+        <h3>Decision output</h3>
+        <p class="muted">Complete the form and press <strong>Analyse case</strong>. The output will identify the likely accepting Trust, commissioner/payment position, escalation actions and dispute wording.</p>
+      </div>
+    </section>
+
+    <section id="brief">
+      <h2>Dispute brief generator</h2>
+      <p class="lead">This is designed for operational emails, finance dispute notes and handover. It uses the facts in the checker above.</p>
+      <div class="actions">
+        <button class="btn primary" onclick="analyseCase(); buildBrief();">Generate brief</button>
+        <button class="btn dark" onclick="copyBrief()">Copy brief</button>
+        <button class="btn dark" onclick="window.print()">Print / save as PDF</button>
+      </div>
+      <div id="briefOutput" class="brief">The generated brief will appear here.</div>
+    </section>
+
+    <section id="scenarios">
+      <h2>Compact scenarios translated into app logic</h2>
+      <p class="lead">These are the adult admission responsibility examples from Appendix 2, rewritten as rules that can be coded into the app.</p>
+      <div class="card soft" style="margin-bottom:16px">
+        <label for="scenarioSearch">Search scenarios</label>
+        <input id="scenarioSearch" oninput="renderScenarios()" placeholder="Search e.g. NFA, GP, s136, hostel, outside England, section 117" />
+      </div>
+      <div id="scenarioList" class="scenario-list"></div>
+    </section>
+
+    <section id="rules">
+      <h2>Core Compact rules for your app</h2>
+      <p class="lead">Use these as the rule engine. They are intentionally phrased as decision rules, not as long policy paragraphs.</p>
+      <table class="rule-table">
+        <thead><tr><th>Rule</th><th>App logic</th><th>Practical finance/dispute point</th></tr></thead>
+        <tbody>
+          <tr><td>Provider responsibility</td><td>For adult admissions, start with the Mental Health Trust responsible for the area where the person is usually resident.</td><td>Do not use GP area alone to decide provider admission responsibility when the Compact points to usual residence.</td></tr>
+          <tr><td>Residence evidence</td><td>If the person says they live at an address, hostel or temporary residence, accept that as usual residence. Do not require tenancy or utility proof.</td><td>This prevents delay from unnecessary proof-of-address disputes.</td></tr>
+          <tr><td>No address / NFA</td><td>If no residence is known or given, default to the Trust closest to where the person was assessed. For s136, use where they were first detained.</td><td>The app should force an answer instead of leaving the case unresolved.</td></tr>
+          <tr><td>Ongoing care exception</td><td>If within 6 months of inpatient care, receiving s117 aftercare, or open to a community team for treatment, and no transfer of care has been initiated, the ongoing-care Trust may be responsible if the patient prefers that.</td><td>This is the key exception to simple residence-based allocation.</td></tr>
+          <tr><td>Long distance from home</td><td>If transfer to the residence/ongoing-care Trust is not in the person’s best interests at that time, the nearest Trust to assessment should admit temporarily.</td><td>Temporary admission should not become a finance blocker; later transfer/recharge can be arranged.</td></tr>
+          <tr><td>Funding separate from admission</td><td>Commissioner responsibility is governed by Who Pays principles, usually GP first, then usual residence if no GP.</td><td>Admission should not be refused or delayed because ICB funding is unclear. Recharging arrangements should follow.</td></tr>
+          <tr><td>Capacity dispute</td><td>A Trust should not refuse admission until formal escalation has been enacted and alternatives explored.</td><td>Capacity pressure is an escalation issue, not an automatic refusal basis.</td></tr>
+          <tr><td>Final default</td><td>If a suitable bed cannot be secured even after escalation, the Mental Health Trust closest to where the person was assessed should admit.</td><td>Use this as the end-point rule to avoid prolonged dispute.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pathways">
+      <h2>Operational pathway guidance</h2>
+      <p class="lead">Use this when building more advanced versions of the app with pathway-specific modules.</p>
+      <div class="timeline">
+        <div class="timebox"><b>15m</b><span>Police/LAS should not wait over 15 minutes once HBPoS capacity is confirmed.</span></div>
+        <div class="timebox"><b>1h</b><span>Mental health service response to referral; HBPoS internal escalation begins early.</span></div>
+        <div class="timebox"><b>3h</b><span>AMHP and s12 doctors should attend within 3 hours unless clinical grounds delay.</span></div>
+        <div class="timebox"><b>4h</b><span>Physical and mental health assessment and care plan target.</span></div>
+        <div class="timebox"><b>6h</b><span>Escalate inpatient admission delay to Surge Services.</span></div>
+        <div class="timebox"><b>12h</b><span>Admissions beyond 12 hours require formal review/reporting.</span></div>
+      </div>
+      <div class="grid two">
+        <details open><summary>Emergency Department</summary><div class="inside">ED completes preliminary physical assessment, risk assessment and mental state observations. Liaison Psychiatry should be alerted quickly and should respond within one hour of referral. Where MHA assessment is needed, AMHP coordinates; assessment should not wait for bed availability.</div></details>
+        <details><summary>Community / section 135</summary><div class="inside">Crisis/community teams assess and involve AMHP where formal assessment is required. If s135 assessment cannot safely occur at home, AMHP arranges conveyance to the closest HBPoS with capacity.</div></details>
+        <details><summary>Police custody</summary><div class="inside">Police contact Liaison and Diversion. FMEs/L&D attend, assess health and mental health need, and request AMHP if formal assessment is required. AMHP arranges conveyance if formal admission follows.</div></details>
+        <details><summary>Section 136 / HBPoS</summary><div class="inside">Police should contact MHCAL before using s136. The closest HBPoS with capacity should be secured. If closest HBPoS has no capacity, that facility coordinates alternatives and escalates rather than simply refusing.</div></details>
+      </div>
+    </section>
+
+    <section id="saved">
+      <h2>Saved cases</h2>
+      <p class="lead">Cases are stored only in this browser using localStorage. They are not sent anywhere.</p>
+      <div class="actions"><button class="btn dark" onclick="renderSaved()">Refresh saved cases</button><button class="btn red" onclick="clearSaved()">Delete all saved cases</button></div>
+      <div id="savedList" class="saved-list"></div>
+    </section>
+
+    <section id="deploy">
+      <h2>Deploy this one-file app to Vercel</h2>
+      <div class="grid two">
+        <div class="card soft">
+          <h3 style="margin-top:0">Option A: Vercel drag-and-drop</h3>
+          <ol class="muted" style="line-height:1.7">
+            <li>Save this file as <strong>index.html</strong>.</li>
+            <li>Create a folder named <strong>compact-responsibility-app</strong>.</li>
+            <li>Put only this <strong>index.html</strong> file inside it.</li>
+            <li>Go to Vercel and import/drag the folder as a static project.</li>
+            <li>No build command is required. Output directory can be left blank.</li>
+          </ol>
+        </div>
+        <div class="card soft">
+          <h3 style="margin-top:0">Option B: GitHub + Vercel</h3>
+          <ol class="muted" style="line-height:1.7">
+            <li>Create a GitHub repository.</li>
+            <li>Upload this file as <strong>index.html</strong> at the repository root.</li>
+            <li>Import the repository in Vercel.</li>
+            <li>Framework preset: <strong>Other</strong>.</li>
+            <li>Build command: leave empty. Deploy.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="callout warn" style="margin-top:16px"><strong>Governance note:</strong> this is a decision-support and documentation tool. It should be checked against your local Trust policy, current ICB arrangements, local bed management protocol and any updated Compact version before being used as a formal operational standard.</div>
+    </section>
+
+    <footer>
+      <div class="footer-card">Built as a single HTML file with local voice-dictation support where the browser permits it. Source basis: Mental Health Compact v5, February 2024, including Appendix 2 adult admission responsibility examples. No patient-identifiable information should be entered unless your organisation has approved the storage and use of such information on the device/browser.</div>
+    </footer>
+  </div>
+  <div id="toast" class="toast">Copied</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const val = id => ($(id).value || '').trim();
+const first = (...items) => items.find(x => x && String(x).trim()) || '';
+
+let recognition = null;
+let dictationActive = false;
+let finalTranscriptBuffer = '';
+
+function setupSpeechRecognition(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    const box = $('speechUnsupported');
+    if(box) box.classList.add('show');
+    const status = $('voiceStatus');
+    if(status) status.textContent = 'Voice recognition unavailable in this browser';
+    return null;
+  }
+  const rec = new SpeechRecognition();
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.lang = 'en-GB';
+  rec.onstart = () => setVoiceState(true, 'Listening... speak the scenario now');
+  rec.onerror = event => {
+    setVoiceState(false, `Voice error: ${event.error || 'unknown error'}`);
+    showToast('Voice recognition stopped');
+  };
+  rec.onend = () => {
+    if(dictationActive){
+      try { rec.start(); } catch(e) { setVoiceState(false, 'Dictation stopped'); }
+    } else {
+      setVoiceState(false, 'Dictation stopped');
+    }
+  };
+  rec.onresult = event => {
+    let interim = '';
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      const text = event.results[i][0].transcript;
+      if(event.results[i].isFinal) finalTranscriptBuffer += text + ' ';
+      else interim += text;
+    }
+    $('scenarioTranscript').value = (finalTranscriptBuffer + interim).trim();
+  };
+  return rec;
+}
+
+function setVoiceState(active, message){
+  const dot = $('recDot');
+  if(dot) dot.classList.toggle('recording', !!active);
+  const status = $('voiceStatus');
+  if(status) status.textContent = message || (active ? 'Listening' : 'Ready to dictate');
+}
+
+function startDictation(){
+  if(!recognition) recognition = setupSpeechRecognition();
+  if(!recognition) return;
+  finalTranscriptBuffer = val('scenarioTranscript') ? val('scenarioTranscript') + ' ' : '';
+  dictationActive = true;
+  try{
+    recognition.start();
+  }catch(e){
+    setVoiceState(true, 'Already listening...');
+  }
+}
+
+function stopDictation(){
+  dictationActive = false;
+  if(recognition){ try { recognition.stop(); } catch(e){} }
+  setVoiceState(false, 'Dictation stopped');
+}
+
+function clearTranscript(){
+  $('scenarioTranscript').value = '';
+  finalTranscriptBuffer = '';
+  $('factPreview').textContent = 'Extracted facts will appear here after you click “Extract obvious facts”.';
+  showToast('Transcript cleared');
+}
+
+function cleanTranscript(){
+  let text = val('scenarioTranscript');
+  if(!text){ showToast('No transcript to clean'); return; }
+  text = text
+    .replace(/\b(um+|erm+|uh+|ah+|like|you know|basically|sort of|kind of)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .trim();
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  $('scenarioTranscript').value = text;
+  finalTranscriptBuffer = text + ' ';
+  showToast('Transcript cleaned');
+}
+
+function sendTranscriptToChecker(runAnalysis){
+  const text = val('scenarioTranscript');
+  if(!text){ showToast('No transcript to send'); return; }
+  const mode = val('dictationMode');
+  if(mode === 'append' && val('clinicalNotes')) $('clinicalNotes').value = val('clinicalNotes') + '\n\nVoice scenario: ' + text;
+  else $('clinicalNotes').value = text;
+  extractFactsFromTranscript(true);
+  if(runAnalysis){
+    analyseCase();
+    window.location.hash = '#result';
+  }else{
+    window.location.hash = '#decision';
+    showToast('Transcript sent to checker');
+  }
+}
+
+function extractFactsFromTranscript(silent=false){
+  const text = val('scenarioTranscript');
+  if(!text){ if(!silent) showToast('No transcript to extract'); return; }
+  const lower = text.toLowerCase();
+  const updates = [];
+  const setIfBlank = (id, value, label) => {
+    if(value && $(id) && !val(id)){
+      $(id).value = value.trim();
+      updates.push(`${label}: ${value.trim()}`);
+    }
+  };
+  const setSelect = (id, value, label) => {
+    if($(id) && value && $(id).value !== value){
+      $(id).value = value;
+      updates.push(`${label}: ${$(id).selectedOptions[0].text}`);
+    }
+  };
+
+  if(/\b(s136|section 136|place of safety|hbpos)\b/i.test(text)) setSelect('pathway','s136','Pathway');
+  else if(/\b(police custody|custody suite|custody)\b/i.test(text)) setSelect('pathway','custody','Pathway');
+  else if(/\b(ed|a&e|emergency department|casualty)\b/i.test(text)) setSelect('pathway','ed','Pathway');
+  else if(/\b(community|crisis team|home assessment|section 135|s135)\b/i.test(text)) setSelect('pathway','community','Pathway');
+
+  if(/\b(under 16|child|paediatric|pediatric)\b/i.test(text)) setSelect('ageGroup','child','Age group');
+  else if(/\b(16|17|seventeen|sixteen|transition|approaching 18|nearly 18)\b/i.test(text)) setSelect('ageGroup','transition','Age group');
+  else if(/\b(adult|18\+|over 18)\b/i.test(text)) setSelect('ageGroup','adult','Age group');
+
+  if(/\b(no fixed abode|nfa|homeless|no address|rough sleeping)\b/i.test(text)) setSelect('housingStatus','nfa','Housing status');
+  else if(/\b(hostel|temporary accommodation|supported accommodation)\b/i.test(text)) setSelect('housingStatus','hostel','Housing status');
+  else if(/\b(outside england|scotland|wales|northern ireland)\b/i.test(text)) setSelect('housingStatus','outside','Housing status');
+  else if(/\b(overseas visitor|visiting from|visitor from abroad)\b/i.test(text)) setSelect('housingStatus','visitor','Housing status');
+
+  if(/\b(section 117|s117|117 aftercare)\b/i.test(text)) setSelect('ongoingCare','s117','Ongoing care');
+  else if(/\b(open to|under|known to|care coordinator|care co-ordinator|cmht|community team)\b/i.test(text)) setSelect('ongoingCare','cmht','Ongoing care');
+  else if(/\b(recent admission|admitted within|inpatient care within|last admission|within six months|within 6 months)\b/i.test(text)) setSelect('ongoingCare','sixMonths','Ongoing care');
+
+  if(/\b(disputed|refusing|refused|declining|will not accept|won't accept)\b/i.test(text)) setSelect('bedStatus','disputed','Bed position');
+  if(/\b(no bed|no beds|bed unavailable|no suitable bed)\b/i.test(text)) setSelect('bedStatus','none','Bed position');
+
+  const waitMatch = text.match(/(?:waiting|waited|delay(?:ed)?|been there|in ed|in a&e|in hbpos)\s*(?:for)?\s*(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)/i) || text.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\s*(?:waiting|delay)/i);
+  if(waitMatch) setIfBlank('waitHours', waitMatch[1], 'Waiting time hours');
+
+  const gpMatch = text.match(/(?:gp|g\.p\.|doctor)\s*(?:is\s*)?(?:registered\s*)?(?:in|at|with)\s+([A-Za-z][A-Za-z\s.'-]{1,45})(?=,|\.|;| and | but | with |$)/i);
+  if(gpMatch) setIfBlank('gpArea', cleanPlace(gpMatch[1]), 'GP area');
+
+  const assessedMatch = text.match(/(?:assessed|presented|currently|seen|arrived)\s*(?:at|in|within)\s+([A-Za-z][A-Za-z\s.'-]{1,60})(?=,|\.|;| and | but | with |$)/i);
+  if(assessedMatch) setIfBlank('assessedArea', cleanPlace(assessedMatch[1]), 'Assessed area');
+
+  const detainedMatch = text.match(/(?:detained|picked up|found)\s*(?:under\s*s136\s*)?(?:at|in|within)\s+([A-Za-z][A-Za-z\s.'-]{1,60})(?=,|\.|;| and | but | with |$)/i);
+  if(detainedMatch && /s136|section 136/i.test(text)) setIfBlank('detainedArea', cleanPlace(detainedMatch[1]), 'First s136 detention area');
+
+  const residenceMatch = text.match(/(?:lives|living|resident|resides|usual residence|address)\s*(?:is\s*)?(?:at|in|within)?\s+([A-Za-z][A-Za-z\s.'-]{1,60})(?=,|\.|;| and | but | with |$)/i);
+  if(residenceMatch && !/no fixed abode|nfa|no address/i.test(text)) setIfBlank('residenceArea', cleanPlace(residenceMatch[1]), 'Residence area');
+
+  const knownMatch = text.match(/(?:open to|known to|under|care coordinator from|care co-ordinator from)\s+([A-Za-z][A-Za-z\s.'-]{2,70})(?=,|\.|;| and | but | with |$)/i);
+  if(knownMatch) setIfBlank('knownArea', cleanPlace(knownMatch[1]), 'Ongoing care area/team');
+
+  const otherTrustMatch = text.match(/(?:dispute with|disputed by|other trust is|asking|requesting)\s+([A-Za-z][A-Za-z\s.'-]{2,70})(?=,|\.|;| and | but | to | for |$)/i);
+  if(otherTrustMatch) setIfBlank('otherTrust', cleanPlace(otherTrustMatch[1]), 'Other Trust');
+
+  const preview = updates.length ? 'Updated fields:\n• ' + updates.join('\n• ') : 'No new obvious structured facts were extracted. You can still send the transcript into clinical facts and complete the key fields manually.';
+  $('factPreview').textContent = preview;
+  if(!silent) showToast(updates.length ? 'Facts extracted — review fields' : 'No new fields extracted');
+}
+
+function cleanPlace(s){
+  return String(s || '')
+    .replace(/\b(the|area|hospital|trust|nhs|foundation|mental health|patient|adult|admission|required)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .replace(/[.,;:]$/,'')
+    .trim();
+}
+
+const scenarios = [
+  {n:1, tag:'GP differs from residence', brief:'Patient presents in Area A, says she moved there 3 months ago, remains registered with GP in Area B, no previous MH provider, wants care near new home/family.', answer:'Trust in Area A. Usual residence and preferred support location outweigh old GP registration for provider responsibility.'},
+  {n:2, tag:'Out-of-London GP, new residence', brief:'Patient moved to Area C almost 6 weeks ago to be near daughter/grandchildren, GP and previous provider in Area D outside London, prefers Area C.', answer:'Trust in Area C. Area D should support handover if patient intends to reside and receive care in Area C.'},
+  {n:3, tag:'Old London GP, now resident elsewhere', brief:'Patient presents in Area A, still has old GP there, now lives in Area B outside London, has previous admissions in Area B, prefers to return home.', answer:'Arrange transfer to Trust in Area B when safe. Area A may need temporary admission if distance/mental state makes immediate transfer unsafe.'},
+  {n:4, tag:'Student', brief:'Student registered with GP at university, family live far away in Area A and patient feels care near family would support recovery.', answer:'Arrange transfer to Trust in Area A when safe, because that is usual residence/support base and preferred recovery location.'},
+  {n:5, tag:'Family in different boroughs', brief:'Patient lives with sister in Borough A, temporarily stays with brother in Borough B for support, bed available in B, private bed in C, wants to stay close to family.', answer:'Admit closest to family/support, including Borough B. Avoid distant placement if a local supportive option exists.'},
+  {n:6, tag:'No GP, resident in London', brief:'Slovenian national living in Area A for 6 months, no GP, taken to ED in Area B by mother, MHA assessment supports admission.', answer:'Trust in Area A. No GP does not override clear usual residence.'},
+  {n:7, tag:'No GP, recent relocation and s136', brief:'Family moved to Area A three weeks ago, no GP yet, taken to Area B HBPoS under s136, admission agreed.', answer:'Trust in Area A. Patient says he is resident there.'},
+  {n:8, tag:'Address provided by carer', brief:'Patient no GP and unable to give residence; mother says patient is resident in Area A with strong support network.', answer:'Trust in Area A. A parent/carer may provide the residence information on the patient’s behalf.'},
+  {n:9, tag:'Hostel with GP', brief:'Patient presents at ED in Area A, says he lives in hostel in Area B and is registered with GP in Area B.', answer:'Trust in Area B. Hostel/temporary accommodation can count as usual residence.'},
+  {n:10, tag:'Hostel, no GP, known to MH team', brief:'Patient taken to Area A HBPoS under s136, lives in temporary hostel accommodation in Area B, known to MH services in Area B, no GP.', answer:'Trust in Area B. Residence and known mental health team both point to Area B.'},
+  {n:11, tag:'Supported placement failed', brief:'Patient lived and received MH care in Area A, placed in supported accommodation in Area B, repeated admissions in B suggest placement has failed, support network in A.', answer:'Transfer to inpatient services of Trust in Area A while recovering, ideally with accommodation closer to support network.'},
+  {n:12, tag:'Resident in Scotland', brief:'Patient lives in Edinburgh, arrested in London, custody/MHA assessment in Area A requires s2 admission.', answer:'Trust in Area A admits initially because assessment took place there. Transfer to Scotland may follow when safe and in best interests.'},
+  {n:13, tag:'Overseas visitor with English support', brief:'French national staying temporarily with friend in Area A; friend takes her to ED in Area B; informal admission accepted.', answer:'Seek patient/friend preference. If care close to friend is best, Trust in Area A admits as closest to support.'},
+  {n:14, tag:'NFA in police custody', brief:'NFA patient arrested in Area A, taken to custody in Area B, MHA assessment in Area B, no GP or address.', answer:'Trust in Area B. This is where patient is held and where MHA assessment occurred.'},
+  {n:15, tag:'NFA but known/recent admission elsewhere', brief:'NFA patient in custody in Area B, no GP, previously known to social services in Area C and had s2 admission there within last 6 months.', answer:'Trust in Area C. Recent inpatient/known services exception applies.'},
+  {n:16, tag:'NFA in ED', brief:'Patient presents at ED in Area A, MHA assessment supports s2, no address, no GP, no further details.', answer:'Trust in Area A. Default to area where assessment took place.'}
+];
+
+function renderScenarios(){
+  const q = val('scenarioSearch').toLowerCase();
+  const list = $('scenarioList');
+  list.innerHTML = '';
+  scenarios.filter(s => !q || `${s.n} ${s.tag} ${s.brief} ${s.answer}`.toLowerCase().includes(q)).forEach(s=>{
+    const div = document.createElement('div');
+    div.className = 'scenario';
+    div.innerHTML = `<span class="pill blue">Scenario ${s.n}</span><h4>${escapeHtml(s.tag)}</h4><p>${escapeHtml(s.brief)}</p><div class="answer">${escapeHtml(s.answer)}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function analyseCase(){
+  const data = collectData();
+  const decision = decide(data);
+  const escalation = escalationAdvice(data);
+  const funding = fundingAdvice(data);
+  const cyp = cypAdvice(data);
+
+  const chips = [];
+  chips.push(`<span class="pill blue">Pathway: ${labelPathway(data.pathway)}</span>`);
+  if(data.waitHoursNum >= 12) chips.push('<span class="pill red">12h breach risk</span>');
+  else if(data.waitHoursNum >= 6) chips.push('<span class="pill amber">6h escalation</span>');
+  else if(data.waitHoursNum >= 4) chips.push('<span class="pill amber">4h delay marker</span>');
+  if(data.ongoingCare !== 'none') chips.push('<span class="pill green">Ongoing care exception checked</span>');
+  if(data.housingStatus === 'nfa') chips.push('<span class="pill red">NFA/no address route</span>');
+  if(data.bedStatus === 'disputed') chips.push('<span class="pill amber">Responsibility disputed</span>');
+
+  $('result').innerHTML = `
+    <h3>Decision output</h3>
+    <div>${chips.join(' ')}</div>
+    <div class="decision">Likely accepting provider: ${escapeHtml(decision.provider)}</div>
+    <div class="callout good"><strong>Reason:</strong> ${escapeHtml(decision.reason)}</div>
+    <div class="grid two" style="margin-top:14px">
+      <div class="callout"><strong>Funding / finance:</strong> ${escapeHtml(funding)}</div>
+      <div class="callout ${escalation.level}"><strong>Escalation:</strong> ${escapeHtml(escalation.text)}</div>
+    </div>
+    ${cyp ? `<div class="callout warn" style="margin-top:14px"><strong>CYP / transition note:</strong> ${escapeHtml(cyp)}</div>` : ''}
+    <div class="card soft" style="margin-top:14px"><strong>Suggested operational position:</strong><br>${escapeHtml(decision.position)}</div>
+  `;
+  buildBrief(decision, funding, escalation, cyp);
+  return {data, decision, funding, escalation, cyp};
+}
+
+function collectData(){
+  const d = {
+    caseName: val('caseName'), pathway: val('pathway'), ageGroup: val('ageGroup'),
+    assessedArea: val('assessedArea'), detainedArea: val('detainedArea'), residenceArea: val('residenceArea'), gpArea: val('gpArea'),
+    knownArea: val('knownArea'), familyArea: val('familyArea'), currentTrust: val('currentTrust'), otherTrust: val('otherTrust'),
+    housingStatus: val('housingStatus'), ongoingCare: val('ongoingCare'), preference: val('preference'), safeTransfer: val('safeTransfer'),
+    bedStatus: val('bedStatus'), waitHours: val('waitHours'), clinicalNotes: val('clinicalNotes'), financeNotes: val('financeNotes')
+  };
+  d.waitHoursNum = Number(d.waitHours || 0);
+  return d;
+}
+
+function decide(d){
+  const areaAssessed = first(d.assessedArea, 'the area where the person is assessed/currently located');
+  const areaDetained = first(d.detainedArea, areaAssessed);
+  const areaResidence = first(d.residenceArea, 'the stated usual residence area');
+  const areaKnown = first(d.knownArea, 'the existing/ongoing-care area');
+  const areaFamily = first(d.familyArea, areaResidence);
+  const other = first(d.otherTrust, `the Mental Health Trust in ${areaResidence}`);
+  const assessedTrust = `the Mental Health Trust responsible for ${areaAssessed}`;
+
+  let provider = '';
+  let reason = '';
+  let position = '';
+
+  if (d.ageGroup !== 'adult') {
+    provider = 'CYP / provider collaborative pathway — not a simple adult Compact allocation';
+    reason = 'The adult boundary scenarios do not fully determine CYP inpatient access. Use CYP MH inpatient access arrangements and escalation routes.';
+    position = 'Escalate through CYP/Tier 4 access arrangements, local CAMHS/adult liaison interface, and executive/on-call escalation if delay is developing.';
+    return {provider, reason, position};
+  }
+
+  const ongoingApplies = d.ongoingCare !== 'none' && (d.preference === 'ongoingTrust' || d.housingStatus === 'nfa' || d.safeTransfer === 'safe');
+  if (ongoingApplies && d.knownArea) {
+    provider = `the Mental Health Trust responsible for ${areaKnown}`;
+    reason = 'The ongoing-care exception is engaged: recent inpatient care, s117 aftercare, or active community treatment can displace the simple residence/default rule where transfer of care has not occurred and ongoing care is the clinically appropriate route.';
+    position = `${provider} should accept admission or provide a clear clinically justified alternative. Funding questions should be resolved through commissioner/recharge processes and should not delay admission.`;
+    return {provider, reason, position};
+  }
+
+  if (d.safeTransfer === 'unsafe' && d.assessedArea) {
+    provider = `${assessedTrust} for temporary admission`;
+    reason = 'Where the person presents a long way from home and conveyance to the otherwise responsible Trust is not currently in the person’s best interests, the nearest Trust to assessment should admit temporarily.';
+    position = `The immediate safety position is temporary admission by ${assessedTrust}, with later transfer/recharge discussions once clinically safe.`;
+    return {provider, reason, position};
+  }
+
+  if (d.housingStatus === 'outside') {
+    provider = assessedTrust;
+    reason = 'Where the person is resident outside England and requires admission following assessment in England, the local assessed-area Trust should admit initially; later transfer can be considered when safe and in the person’s best interests.';
+    position = `${assessedTrust} should not refuse solely because the person ordinarily lives outside England. A transfer plan can follow once admission is secured.`;
+    return {provider, reason, position};
+  }
+
+  if (d.housingStatus === 'visitor') {
+    provider = d.familyArea ? `the Mental Health Trust responsible for ${areaFamily}` : assessedTrust;
+    reason = 'For an overseas visitor staying temporarily with support in England, patient/support preference should be sought; if admission near that support best serves recovery, the support-area Trust is the stronger route.';
+    position = `${provider} should be approached with the patient preference/support rationale. If preference is unclear, use the assessed-area default.`;
+    return {provider, reason, position};
+  }
+
+  if (d.housingStatus === 'nfa') {
+    if (d.pathway === 's136') {
+      provider = `the Mental Health Trust responsible for ${areaDetained}`;
+      reason = 'No residence or address is known. Because the assessment followed s136, the default is the Trust closest to where the person was first detained under s136.';
+    } else {
+      provider = assessedTrust;
+      reason = 'No residence or address is known and no GP/residence evidence resolves the issue. The default is the Trust closest to where assessment took place.';
+    }
+    position = `${provider} should accept admission unless a valid ongoing-care exception is evidenced. Capacity or funding issues should move to escalation/recharge rather than refusal.`;
+    return {provider, reason, position};
+  }
+
+  if (d.housingStatus === 'family' && d.residenceArea) {
+    provider = `the Mental Health Trust responsible for ${areaResidence}`;
+    reason = 'Where the patient cannot provide an address, another person such as a parent or carer may provide residence information on their behalf.';
+    position = `${provider} should accept on residence/support evidence, subject to clinical placement and escalation if capacity is unavailable.`;
+    return {provider, reason, position};
+  }
+
+  if ((d.housingStatus === 'hostel' || d.housingStatus === 'stated') && d.residenceArea) {
+    provider = `the Mental Health Trust responsible for ${areaResidence}`;
+    reason = d.housingStatus === 'hostel'
+      ? 'Hostel or temporary accommodation can be accepted as usual residence. Admission should not be delayed by demanding formal proof of address.'
+      : 'The first adult provider-responsibility rule is usual residence, based on where the person considers themselves resident.';
+    if (d.gpArea && d.gpArea.toLowerCase() !== d.residenceArea.toLowerCase()) {
+      reason += ' GP registration may determine commissioner/payment responsibility, but it does not automatically override Compact provider responsibility.';
+    }
+    position = `${provider} is the strongest accepting-provider position. If ${first(d.otherTrust,'the other Trust')} disputes this, request escalation between bed managers/on-call managers rather than delaying admission.`;
+    return {provider, reason, position};
+  }
+
+  provider = assessedTrust;
+  reason = 'Insufficient residence/ongoing-care information has been entered, so the safe default is the Trust closest to the assessment/current location.';
+  position = `${assessedTrust} should accept or lead escalation while additional residence/ongoing-care facts are clarified.`;
+  return {provider, reason, position};
+}
+
+function fundingAdvice(d){
+  if (d.ongoingCare === 's117') {
+    return 'Check the originating ICB/s117 aftercare position. The Compact separates commissioner payment from provider admission responsibility, and any dispute should be managed by commissioner recharge rather than delaying admission.';
+  }
+  if (d.gpArea && d.gpArea.toLowerCase() !== 'none') {
+    return `Who Pays usually starts with GP registration, so the commissioner/payment route may point to ${d.gpArea}. That does not automatically decide which Trust must accept admission under the Compact.`;
+  }
+  if (d.residenceArea) {
+    return `No clear GP area has been entered, so commissioner/payment analysis should use usual residence: ${d.residenceArea}. Admission should proceed while recharge/ICB questions are resolved.`;
+  }
+  return 'Commissioner/payment responsibility is not clear from the entered facts. That uncertainty should not be used to refuse or delay admission; escalate and use recharge arrangements.';
+}
+
+function escalationAdvice(d){
+  const h = d.waitHoursNum;
+  if (h >= 12) return {level:'bad', text:'The case is at or beyond the 12-hour threshold. Formal investigation/reporting should be considered, with immediate senior escalation and joint review if multiple Trusts contributed to delay.'};
+  if (h >= 6) return {level:'warn', text:'Escalate to Surge Services for inpatient admission delay, after internal and inter-provider escalation. Local Surge may convene senior Trust/Acute/ICB discussion.'};
+  if (h >= 4 && d.pathway === 's136') return {level:'warn', text:'For HBPoS acceptance, waiting beyond 4 hours from initial request should be escalated to Surge Services.'};
+  if (h >= 4) return {level:'warn', text:'The case has crossed a significant 4-hour marker. Confirm assessment/care plan, bed manager actions, and whether Trust CEO/commissioner escalation is required if responsibility remains disputed.'};
+  if (h >= 3 && d.bedStatus === 'disputed') return {level:'warn', text:'If admission is delayed for 3 hours due to uncertainty over which Trust should accept, escalate to Trust Chief Executives. If unresolved beyond 4 hours, escalate to relevant commissioners.'};
+  if (h >= 1 && (d.bedStatus === 'none' || d.bedStatus === 'disputed')) return {level:'', text:'Internal bed manager/facility coordinator escalation should already be active. Confirm physical headcount, discharges, transfers, escalation beds and local private/NHS alternatives.'};
+  return {level:'', text:'No major time threshold is shown yet. Document the request time, assessment outcome, bed manager contact, and agreed next action now to prevent drift.'};
+}
+
+function cypAdvice(d){
+  if (d.ageGroup === 'transition') return 'For 16–17 year olds or those close to 18, use CYP MH inpatient access arrangements and consider whether an adult bed is clinically/governance approved as a short-term emergency option. Transition planning and safeguarding must be explicit.';
+  if (d.ageGroup === 'child') return 'For under-16s, use CYP/Tier 4 access routes. A police station must not be used as a place of safety for under-18s. Safeguarding and CAMHS escalation should be explicit.';
+  return '';
+}
+
+function buildBrief(existingDecision, existingFunding, existingEscalation, existingCyp){
+  const data = collectData();
+  const decision = existingDecision || decide(data);
+  const funding = existingFunding || fundingAdvice(data);
+  const escalation = existingEscalation || escalationAdvice(data);
+  const cyp = existingCyp || cypAdvice(data);
+  const lines = [];
+  lines.push(`Subject: Mental Health Compact admission responsibility position${data.caseName ? ' — ' + data.caseName : ''}`);
+  lines.push('');
+  lines.push('Summary');
+  lines.push(`A patient has presented via ${labelPathway(data.pathway)} and requires consideration for mental health inpatient admission. Based on the Mental Health Compact v5 principles, the likely accepting provider is ${decision.provider}.`);
+  lines.push('');
+  lines.push('Material facts entered');
+  lines.push(`• Assessment/current location: ${data.assessedArea || 'not recorded'}`);
+  lines.push(`• First s136 detention area: ${data.detainedArea || 'not applicable/not recorded'}`);
+  lines.push(`• Usual residence / stated address: ${data.residenceArea || 'not recorded'}`);
+  lines.push(`• GP registration area: ${data.gpArea || 'not recorded'}`);
+  lines.push(`• Ongoing MH team/recent admission/s117 area: ${data.knownArea || 'not recorded'}`);
+  lines.push(`• Housing/residence status: ${labelHousing(data.housingStatus)}`);
+  lines.push(`• Ongoing care status: ${labelOngoing(data.ongoingCare)}`);
+  lines.push(`• Patient preference: ${labelPreference(data.preference)}`);
+  lines.push(`• Waiting time recorded: ${data.waitHours || '0'} hour(s)`);
+  lines.push('');
+  lines.push('Compact position');
+  lines.push(`• ${decision.reason}`);
+  lines.push(`• ${decision.position}`);
+  lines.push(`• Finance/payment: ${funding}`);
+  lines.push(`• Escalation: ${escalation.text}`);
+  if(cyp) lines.push(`• CYP/transition note: ${cyp}`);
+  if(data.clinicalNotes){lines.push('');lines.push('Clinical/operational notes');lines.push(data.clinicalNotes)}
+  if(data.financeNotes){lines.push('');lines.push('Finance/commissioner notes');lines.push(data.financeNotes)}
+  lines.push('');
+  lines.push('Requested action');
+  lines.push(`Please confirm acceptance by ${decision.provider}, or provide the named senior escalation contact and commissioner route immediately so that the patient’s admission is not delayed by provider or funding ambiguity.`);
+  $('briefOutput').textContent = lines.join('\n');
+}
+
+function saveCase(){
+  const analysis = analyseCase();
+  const saved = JSON.parse(localStorage.getItem('compactCases') || '[]');
+  saved.unshift({id:Date.now(), created:new Date().toISOString(), data:analysis.data, decision:analysis.decision, funding:analysis.funding, escalation:analysis.escalation});
+  localStorage.setItem('compactCases', JSON.stringify(saved.slice(0,50)));
+  showToast('Case saved locally');
+  renderSaved();
+}
+function renderSaved(){
+  const saved = JSON.parse(localStorage.getItem('compactCases') || '[]');
+  const list = $('savedList');
+  if(!saved.length){list.innerHTML = '<div class="card soft muted">No saved cases yet.</div>'; return;}
+  list.innerHTML = '';
+  saved.forEach(item=>{
+    const div = document.createElement('div');
+    div.className = 'saved-item';
+    div.innerHTML = `<div><b>${escapeHtml(item.data.caseName || 'Unnamed case')}</b><small>${new Date(item.created).toLocaleString()} · ${escapeHtml(item.decision.provider)}</small></div><div class="actions" style="margin:0"><button class="btn dark" onclick="loadCase(${item.id})">Load</button><button class="btn red" onclick="deleteCase(${item.id})">Delete</button></div>`;
+    list.appendChild(div);
+  });
+}
+function loadCase(id){
+  const saved = JSON.parse(localStorage.getItem('compactCases') || '[]');
+  const item = saved.find(x=>x.id===id); if(!item) return;
+  Object.entries(item.data).forEach(([k,v])=>{ if($(k)) $(k).value = v; });
+  analyseCase(); window.location.hash = '#decision'; showToast('Case loaded');
+}
+function deleteCase(id){
+  const saved = JSON.parse(localStorage.getItem('compactCases') || '[]').filter(x=>x.id!==id);
+  localStorage.setItem('compactCases', JSON.stringify(saved)); renderSaved(); showToast('Deleted');
+}
+function clearSaved(){
+  if(confirm('Delete all saved cases from this browser?')){localStorage.removeItem('compactCases');renderSaved();showToast('All saved cases deleted');}
+}
+function resetForm(){
+  document.querySelectorAll('input, textarea').forEach(el=>el.value='');
+  document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);
+  $('result').innerHTML = '<h3>Decision output</h3><p class="muted">Complete the form and press <strong>Analyse case</strong>.</p>';
+  $('briefOutput').textContent = 'The generated brief will appear here.';
+}
+function copyBrief(){
+  navigator.clipboard.writeText($('briefOutput').textContent || '').then(()=>showToast('Brief copied'));
+}
+function showToast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800);
+}
+function labelPathway(x){return {ed:'Emergency Department', community:'Community / Crisis Team / s135', custody:'Police custody', s136:'Section 136 / HBPoS'}[x] || x}
+function labelHousing(x){return {stated:'Patient gives current residence', hostel:'Hostel / temporary accommodation', family:'Residence given by parent/carer/other person', nfa:'No fixed abode / no address', outside:'Resident outside England', visitor:'Overseas visitor staying temporarily with support in England'}[x]||x}
+function labelOngoing(x){return {none:'No ongoing MH care / no recent admission / no s117', cmht:'Open to community MH team for treatment', sixMonths:'Inpatient care within last 6 months', s117:'Receiving section 117 aftercare'}[x]||x}
+function labelPreference(x){return {nearResidence:'Wants care near current residence', ongoingTrust:'Wants care from existing / ongoing Trust', nearFamily:'Wants care near family/support', unknown:'Not known / unable to state'}[x]||x}
+function escapeHtml(s){return String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));}
+renderScenarios(); renderSaved(); setupSpeechRecognition();
+</script>
+</body>
+</html>
